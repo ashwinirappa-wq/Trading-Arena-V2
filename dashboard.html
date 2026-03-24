@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campaign Dashboard — Exchange Campaign Management</title>
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card-bg: #fff;
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      --card-radius: 8px;
+      --text-dark: #333;
+      --text-gray: #666;
+      --border: #ddd;
+      --border-light: #e8e8e8;
+      --primary: #4CAF50;
+      --primary-hover: #45a049;
+      --input-radius: 4px;
+      --header-bg: #0d0d1c;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text-dark); margin: 0; padding: 0; line-height: 1.5; }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    .page-header { background: var(--header-bg); color: #fff; padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .header-brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; }
+    .header-brand-icon { width: 28px; height: 28px; background: linear-gradient(135deg,#1976d2,#42a5f5); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+    .header-divider { width: 1px; height: 20px; background: #333; margin: 0 12px; }
+    .header-title { font-size: 14px; font-weight: 400; color: #aaa; }
+    .btn-create { background: var(--primary); color: #fff; border: none; padding: 9px 20px; border-radius: var(--input-radius); font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-create:hover { background: var(--primary-hover); }
+
+    /* ── Page body ──────────────────────────────────────────────── */
+    .page-body { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+
+    /* ── Page title row ─────────────────────────────────────────── */
+    .page-title-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; }
+    .page-title { font-size: 22px; font-weight: 800; margin: 0 0 4px; }
+    .page-subtitle { font-size: 13px; color: var(--text-gray); margin: 0; }
+    .campaign-count-badge { background: #e8f5e9; color: #2e7d32; font-size: 13px; font-weight: 600; padding: 4px 12px; border-radius: 12px; }
+
+    /* ── Status filter tabs ─────────────────────────────────────── */
+    .status-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border-light); margin-bottom: 20px; }
+    .status-tab { padding: 9px 18px; font-size: 13px; font-weight: 500; color: var(--text-gray); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; white-space: nowrap; }
+    .status-tab:hover { color: var(--text-dark); }
+    .status-tab.active { color: #1976d2; border-bottom-color: #1976d2; font-weight: 600; }
+    .status-tab .tab-count { background: #f0f0f0; color: var(--text-gray); font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 8px; margin-left: 5px; }
+    .status-tab.active .tab-count { background: #e3f0fb; color: #1976d2; }
+
+    /* ── Toolbar ────────────────────────────────────────────────── */
+    .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .search-wrap { position: relative; flex: 1; max-width: 360px; }
+    .search-wrap input { width: 100%; padding: 9px 12px 9px 36px; border: 1px solid var(--border); border-radius: var(--input-radius); font-size: 14px; background: #fff; }
+    .search-wrap input:focus { outline: none; border-color: #1976d2; }
+    .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 15px; pointer-events: none; }
+    .toolbar-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+    .sort-label { font-size: 13px; color: var(--text-gray); }
+    .sort-select { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--input-radius); font-size: 13px; background: #fff; cursor: pointer; }
+    .sort-select:focus { outline: none; border-color: #1976d2; }
+    .results-info { font-size: 13px; color: var(--text-gray); white-space: nowrap; }
+
+    /* ── Status badges ──────────────────────────────────────────── */
+    .badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .badge-draft       { background: #f0f0f0; color: #666; }
+    .badge-draft::before { background: #aaa; }
+    .badge-scheduled   { background: #e3f0fb; color: #1565c0; }
+    .badge-scheduled::before { background: #1976d2; }
+    .badge-active      { background: #e8f5e9; color: #2e7d32; }
+    .badge-active::before { background: #4caf50; animation: pulse 1.5s infinite; }
+    .badge-ended       { background: #fff8e1; color: #f57f17; }
+    .badge-ended::before { background: #ffa000; }
+    .badge-deactivated { background: #ffebee; color: #c62828; }
+    .badge-deactivated::before { background: #d32f2f; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── Table ──────────────────────────────────────────────────── */
+    .table-wrap { background: var(--card-bg); border-radius: var(--card-radius); box-shadow: var(--card-shadow); overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+    thead th { background: #f9f9f9; padding: 11px 14px; text-align: left; font-size: 12px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-light); white-space: nowrap; cursor: pointer; user-select: none; }
+    thead th:hover { color: var(--text-dark); }
+    thead th .sort-arrow { margin-left: 4px; opacity: 0.4; font-size: 10px; }
+    thead th.sorted .sort-arrow { opacity: 1; color: #1976d2; }
+    thead th:last-child { cursor: default; }
+    tbody tr { border-bottom: 1px solid var(--border-light); transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    tbody td { padding: 13px 14px; vertical-align: middle; }
+    .campaign-name { font-weight: 600; color: var(--text-dark); }
+    .campaign-code { font-size: 12px; color: var(--text-gray); font-family: 'SF Mono', 'Consolas', monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; }
+    .construct-label { font-size: 12px; color: var(--text-gray); max-width: 180px; }
+    .date-cell { font-size: 13px; white-space: nowrap; }
+    .date-none { color: #bbb; font-style: italic; }
+
+    /* ── Action buttons ─────────────────────────────────────────── */
+    .actions { display: flex; gap: 6px; align-items: center; }
+    .btn-action { padding: 5px 11px; border-radius: var(--input-radius); font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid transparent; transition: all 0.15s; white-space: nowrap; }
+    .btn-edit       { background: #fff; border-color: #1976d2; color: #1976d2; }
+    .btn-edit:hover { background: #e3f0fb; }
+    .btn-clone      { background: #fff; border-color: var(--border); color: var(--text-gray); }
+    .btn-clone:hover{ background: #f5f5f5; color: var(--text-dark); }
+    .btn-view       { background: #fff; border-color: var(--border); color: var(--text-gray); }
+    .btn-view:hover { background: #f5f5f5; color: var(--text-dark); }
+    .btn-deactivate { background: #fff; border-color: #d32f2f; color: #d32f2f; }
+    .btn-deactivate:hover { background: #ffebee; }
+    .btn-disabled   { opacity: 0.35; pointer-events: none; }
+
+    /* ── Empty state ────────────────────────────────────────────── */
+    .empty-state { text-align: center; padding: 72px 24px; background: var(--card-bg); border-radius: var(--card-radius); box-shadow: var(--card-shadow); }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .empty-subtitle { font-size: 14px; color: var(--text-gray); margin-bottom: 24px; }
+    .btn-empty-create { background: var(--primary); color: #fff; border: none; padding: 11px 24px; border-radius: var(--input-radius); font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-empty-create:hover { background: var(--primary-hover); }
+
+    /* ── Pagination ─────────────────────────────────────────────── */
+    .pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+    .pagination-info { font-size: 13px; color: var(--text-gray); }
+    .pagination { display: flex; gap: 4px; }
+    .page-btn { width: 32px; height: 32px; border-radius: var(--input-radius); border: 1px solid var(--border); background: #fff; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .page-btn:hover { background: #f0f0f0; }
+    .page-btn.active { background: #1976d2; color: #fff; border-color: #1976d2; font-weight: 700; }
+    .page-btn:disabled { opacity: 0.35; cursor: default; }
+
+    /* ── Modals ─────────────────────────────────────────────────── */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: #fff; border-radius: 10px; box-shadow: 0 8px 40px rgba(0,0,0,0.18); width: 460px; max-width: 95vw; }
+    .modal-header { padding: 20px 24px 0; display: flex; align-items: center; justify-content: space-between; }
+    .modal-header h3 { margin: 0; font-size: 17px; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-gray); line-height: 1; }
+    .modal-body { padding: 16px 24px 20px; font-size: 14px; color: var(--text-gray); line-height: 1.6; }
+    .modal-body .campaign-highlight { font-weight: 700; color: var(--text-dark); }
+    .modal-footer { padding: 0 24px 20px; display: flex; justify-content: flex-end; gap: 10px; }
+    .btn-cancel   { background: #f0f0f0; color: var(--text-dark); border: none; padding: 9px 20px; border-radius: var(--input-radius); font-size: 14px; font-weight: 500; cursor: pointer; }
+    .btn-cancel:hover { background: #e0e0e0; }
+    .btn-confirm-deactivate { background: #d32f2f; color: #fff; border: none; padding: 9px 20px; border-radius: var(--input-radius); font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-confirm-deactivate:hover { background: #b71c1c; }
+
+    /* ── View modal (read-only summary) ────────────────────────── */
+    .view-modal { width: 620px; max-height: 85vh; display: flex; flex-direction: column; }
+    .view-modal-body { overflow-y: auto; padding: 16px 24px 20px; }
+    .vm-section { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #1976d2; margin: 18px 0 8px; padding-bottom: 5px; border-bottom: 2px solid #e3f0fb; }
+    .vm-section:first-child { margin-top: 0; }
+    .vm-row { display: flex; padding: 6px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
+    .vm-label { width: 180px; flex-shrink: 0; color: var(--text-gray); font-weight: 500; }
+    .vm-value { flex: 1; color: var(--text-dark); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ── Header ────────────────────────────────────────────────── -->
+  <header class="page-header">
+    <div class="header-brand">
+      <div class="header-brand-icon">⬡</div>
+      EXCHANGE
+      <div class="header-divider"></div>
+      <span class="header-title">Campaign Management</span>
+    </div>
+    <button class="btn-create" id="btnCreateNew" onclick="window.location.href='index.html'">
+      + Create New Campaign
+    </button>
+  </header>
+
+  <!-- ── Page body ─────────────────────────────────────────────── -->
+  <div class="page-body">
+
+    <!-- Title row -->
+    <div class="page-title-row">
+      <div>
+        <h1 class="page-title">Campaign Dashboard</h1>
+        <p class="page-subtitle">Manage and monitor all trading volume campaigns</p>
+      </div>
+      <span class="campaign-count-badge" id="totalBadge"></span>
+    </div>
+
+    <!-- Status filter tabs -->
+    <div class="status-tabs" id="statusTabs">
+      <div class="status-tab active" data-filter="all">All <span class="tab-count" id="cnt-all"></span></div>
+      <div class="status-tab" data-filter="draft">Draft <span class="tab-count" id="cnt-draft"></span></div>
+      <div class="status-tab" data-filter="scheduled">Scheduled <span class="tab-count" id="cnt-scheduled"></span></div>
+      <div class="status-tab" data-filter="active">Active <span class="tab-count" id="cnt-active"></span></div>
+      <div class="status-tab" data-filter="ended">Ended <span class="tab-count" id="cnt-ended"></span></div>
+      <div class="status-tab" data-filter="deactivated">Deactivated <span class="tab-count" id="cnt-deactivated"></span></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search by campaign name or code…">
+      </div>
+      <div class="toolbar-right">
+        <span class="sort-label">Sort by</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="createdDesc">Created Date (newest)</option>
+          <option value="createdAsc">Created Date (oldest)</option>
+          <option value="startAsc">Start Date (earliest)</option>
+          <option value="startDesc">Start Date (latest)</option>
+          <option value="status">Status</option>
+          <option value="construct">Construct Type</option>
+        </select>
+        <span class="results-info" id="resultsInfo"></span>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap" id="tableWrap">
+      <table id="campaignTable">
+        <thead>
+          <tr>
+            <th data-col="name">Campaign Name <span class="sort-arrow">↕</span></th>
+            <th data-col="code">Code <span class="sort-arrow">↕</span></th>
+            <th data-col="status">Status <span class="sort-arrow">↕</span></th>
+            <th data-col="construct">Construct Type <span class="sort-arrow">↕</span></th>
+            <th data-col="startDate">Start Date <span class="sort-arrow">↕</span></th>
+            <th data-col="endDate">End Date <span class="sort-arrow">↕</span></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="campaignTableBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state hidden" id="emptyState">
+      <div class="empty-icon">📋</div>
+      <div class="empty-title">No campaigns yet</div>
+      <div class="empty-subtitle">Create your first campaign to get started.</div>
+      <button class="btn-empty-create" onclick="window.location.href='index.html'">+ Create New Campaign</button>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-row hidden" id="paginationRow">
+      <div class="pagination-info" id="paginationInfo"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- ── Deactivate Confirmation Modal ─────────────────────────── -->
+  <div class="modal-overlay" id="deactivateModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Deactivate Campaign</h3>
+        <button class="modal-close" id="closeDeactivateModal">✕</button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to deactivate <span class="campaign-highlight" id="deactivateCampaignName"></span>?
+        <br><br>
+        This will immediately stop the campaign. The leaderboard will be frozen and no further trading volume will be counted. <strong>This action cannot be undone.</strong>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="cancelDeactivate">Cancel</button>
+        <button class="btn-confirm-deactivate" id="confirmDeactivate">Deactivate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Clone Confirmation Modal ──────────────────────────────── -->
+  <div class="modal-overlay" id="cloneModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Clone Campaign</h3>
+        <button class="modal-close" id="closeCloneModal">✕</button>
+      </div>
+      <div class="modal-body">
+        A new <strong>Draft</strong> copy of <span class="campaign-highlight" id="cloneCampaignName"></span> will be created. You can then edit and activate it independently.
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="cancelClone">Cancel</button>
+        <button class="btn-create" id="confirmClone">Clone as Draft</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── View Read-Only Modal ───────────────────────────────────── -->
+  <div class="modal-overlay" id="viewModal">
+    <div class="modal view-modal">
+      <div class="modal-header">
+        <h3 id="viewModalTitle">Campaign Summary</h3>
+        <button class="modal-close" id="closeViewModal">✕</button>
+      </div>
+      <div class="view-modal-body" id="viewModalBody"></div>
+      <div class="modal-footer">
+        <button class="btn-cancel" id="closeViewModal2">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Campaign Data ─────────────────────────────────────────────
+    // Dates relative to today: March 22, 2026
+    const today = new Date('2026-03-22');
+
+    let campaigns = [
+      {
+        id: 1,
+        name: 'APEX of Trade Q1 2026',
+        code: 'APEX2026Q1',
+        construct: 'Winner Takes All — Cumulative Total',
+        startDate: '2026-02-25',
+        endDate: '2026-03-26',
+        created: '2026-02-10',
+        userGroup: 'All Users',
+        assetType: 'Spot, Perps',
+        volBasis: 'Taker Volume Only',
+        participationMode: 'Opt-In Required',
+        status: 'active'
+      },
+      {
+        id: 2,
+        name: 'Spring Volume Rush',
+        code: 'SPRING2026',
+        construct: 'Top N Fixed — Daily',
+        startDate: '2026-03-25',
+        endDate: '2026-04-25',
+        created: '2026-03-10',
+        userGroup: 'All Users',
+        assetType: 'Spot',
+        volBasis: 'Total Eligible Volume',
+        participationMode: 'Automatic',
+        status: 'scheduled'
+      },
+      {
+        id: 3,
+        name: 'VIP Consistency Crown',
+        code: 'VIPCROWN01',
+        construct: 'Winner Takes All — Rolling X-Days Average',
+        startDate: null,
+        endDate: null,
+        created: '2026-03-18',
+        userGroup: 'VIP User',
+        assetType: 'Spot, Perps',
+        volBasis: 'Total Eligible Volume',
+        participationMode: 'Opt-In Required',
+        status: 'draft'
+      },
+      {
+        id: 4,
+        name: 'Buy Dip Campaign Feb',
+        code: 'BUYDIP-FEB26',
+        construct: 'Top N Tiered — Cumulative Total',
+        startDate: '2026-02-01',
+        endDate: '2026-02-28',
+        created: '2026-01-20',
+        userGroup: 'All Users',
+        assetType: 'Spot',
+        volBasis: 'Buy Volume Only',
+        participationMode: 'Opt-In Required',
+        status: 'ended'
+      },
+      {
+        id: 5,
+        name: 'New Year Milestone Race',
+        code: 'NYR2026',
+        construct: 'Winner Takes All — Milestone Progress',
+        startDate: '2025-12-31',
+        endDate: '2026-01-15',
+        created: '2025-12-15',
+        userGroup: 'All Users',
+        assetType: 'Perps',
+        volBasis: 'Total Eligible Volume',
+        participationMode: 'Automatic',
+        status: 'ended'
+      },
+      {
+        id: 6,
+        name: 'Flash Trading Wednesday',
+        code: 'FLASH-W8-26',
+        construct: 'Top N Fixed — Daily',
+        startDate: '2026-02-18',
+        endDate: '2026-02-18',
+        created: '2026-02-10',
+        userGroup: 'All Users',
+        assetType: 'Spot',
+        volBasis: 'Taker Volume Only',
+        participationMode: 'Automatic',
+        status: 'deactivated'
+      },
+      {
+        id: 7,
+        name: 'CRO Trading Week',
+        code: 'CTWR-MAR26',
+        construct: '—',
+        startDate: null,
+        endDate: null,
+        created: '2026-03-20',
+        userGroup: '—',
+        assetType: 'Eligible Token Pairs',
+        volBasis: '—',
+        participationMode: '—',
+        status: 'draft'
+      },
+      {
+        id: 8,
+        name: 'Perpetuals Power League',
+        code: 'PERP-APR26',
+        construct: 'Top N Tiered — Rolling Average',
+        startDate: '2026-04-01',
+        endDate: '2026-04-30',
+        created: '2026-03-15',
+        userGroup: 'VIP User',
+        assetType: 'Perps',
+        volBasis: 'Total Eligible Volume',
+        participationMode: 'Opt-In Required',
+        status: 'scheduled'
+      },
+      {
+        id: 9,
+        name: 'Spot Leaderboard League',
+        code: 'SPOT-LL-Q1',
+        construct: 'Top N Fixed — Cumulative Total',
+        startDate: '2026-01-05',
+        endDate: '2026-01-31',
+        created: '2025-12-28',
+        userGroup: 'Braze Segment',
+        assetType: 'Spot',
+        volBasis: 'Maker Volume Only',
+        participationMode: 'Opt-In Required',
+        status: 'ended'
+      }
+    ];
+
+    // ── State ─────────────────────────────────────────────────────
+    let currentFilter  = 'all';
+    let currentSearch  = '';
+    let currentSort    = 'createdDesc';
+    let currentPage    = 1;
+    const PAGE_SIZE    = 20;
+    let pendingDeactivateId = null;
+    let pendingCloneId      = null;
+    let sortCol = null;
+    let sortDir = 'asc';
+
+    // ── Status state machine: auto-transition based on dates ──────
+    function computeStatus(c) {
+      if (c.status === 'deactivated') return 'deactivated';
+      if (!c.startDate) return 'draft';
+      const start = new Date(c.startDate);
+      const end   = c.endDate ? new Date(c.endDate) : null;
+      if (today < start) return 'scheduled';
+      if (end && today > end) return 'ended';
+      return 'active';
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────
+    function fmtDate(d) {
+      if (!d) return '<span class="date-none">—</span>';
+      const dt = new Date(d);
+      return dt.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+    }
+
+    function statusBadge(status) {
+      const map = {
+        draft:       { cls:'badge-draft',       label:'Draft'       },
+        scheduled:   { cls:'badge-scheduled',   label:'Scheduled'   },
+        active:      { cls:'badge-active',       label:'Active'      },
+        ended:       { cls:'badge-ended',        label:'Ended'       },
+        deactivated: { cls:'badge-deactivated',  label:'Deactivated' }
+      };
+      const m = map[status] || map.draft;
+      return `<span class="badge ${m.cls}">${m.label}</span>`;
+    }
+
+    function canDeactivate(status) { return status === 'active' || status === 'scheduled'; }
+    function canEdit(status)       { return status === 'draft' || status === 'scheduled'; }
+    function canActivate(status)   { return status === 'draft'; }
+
+    // ── Filter + sort + paginate ───────────────────────────────────
+    function getFiltered() {
+      let list = campaigns.map(c => ({ ...c, computedStatus: computeStatus(c) }));
+      if (currentFilter !== 'all') list = list.filter(c => c.computedStatus === currentFilter);
+      if (currentSearch.trim()) {
+        const q = currentSearch.trim().toLowerCase();
+        list = list.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q));
+      }
+      list.sort((a, b) => {
+        switch (currentSort) {
+          case 'createdAsc':  return new Date(a.created) - new Date(b.created);
+          case 'createdDesc': return new Date(b.created) - new Date(a.created);
+          case 'startAsc':    return (a.startDate||'9999') < (b.startDate||'9999') ? -1 : 1;
+          case 'startDesc':   return (a.startDate||'0000') > (b.startDate||'0000') ? -1 : 1;
+          case 'status': { const o=['active','scheduled','draft','ended','deactivated']; return o.indexOf(a.computedStatus) - o.indexOf(b.computedStatus); }
+          case 'construct':   return a.construct.localeCompare(b.construct);
+          default: return 0;
+        }
+      });
+      return list;
+    }
+
+    // ── Render table ──────────────────────────────────────────────
+    function render() {
+      const allData    = getFiltered();
+      const total      = allData.length;
+      const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      const pageData   = allData.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+      // Update tab counts
+      const allCampaigns = campaigns.map(c => computeStatus(c));
+      ['draft','scheduled','active','ended','deactivated'].forEach(s => {
+        document.getElementById('cnt-' + s).textContent = allCampaigns.filter(cs => cs === s).length;
+      });
+      document.getElementById('cnt-all').textContent = campaigns.length;
+      document.getElementById('totalBadge').textContent = campaigns.length + ' campaign' + (campaigns.length !== 1 ? 's' : '');
+
+      // Results info
+      document.getElementById('resultsInfo').textContent =
+        total === 0 ? 'No results' : `Showing ${(currentPage-1)*PAGE_SIZE+1}–${Math.min(currentPage*PAGE_SIZE,total)} of ${total}`;
+
+      // Table / empty state
+      const tbody = document.getElementById('campaignTableBody');
+      const tableWrap = document.getElementById('tableWrap');
+      const emptyState = document.getElementById('emptyState');
+      if (total === 0) {
+        tableWrap.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        document.getElementById('paginationRow').classList.add('hidden');
+      } else {
+        tableWrap.classList.remove('hidden');
+        emptyState.classList.add('hidden');
+        tbody.innerHTML = pageData.map(c => {
+          const st = c.computedStatus;
+          const deactivateBtn = canDeactivate(st)
+            ? `<button class="btn-action btn-deactivate" onclick="openDeactivate(${c.id})">Deactivate</button>`
+            : `<button class="btn-action btn-deactivate btn-disabled" disabled>Deactivate</button>`;
+          const editBtn = canEdit(st)
+            ? `<button class="btn-action btn-edit" onclick="window.location.href='index.html'">Edit</button>`
+            : `<button class="btn-action btn-edit btn-disabled" disabled>Edit</button>`;
+          return `<tr>
+            <td><div class="campaign-name">${c.name}</div></td>
+            <td><span class="campaign-code">${c.code}</span></td>
+            <td>${statusBadge(st)}</td>
+            <td><div class="construct-label">${c.construct}</div></td>
+            <td class="date-cell">${fmtDate(c.startDate)}</td>
+            <td class="date-cell">${fmtDate(c.endDate)}</td>
+            <td>
+              <div class="actions">
+                ${editBtn}
+                <button class="btn-action btn-clone" onclick="openClone(${c.id})">Clone</button>
+                ${deactivateBtn}
+                <button class="btn-action btn-view" onclick="openView(${c.id})">View</button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('');
+
+        // Pagination
+        const pagRow = document.getElementById('paginationRow');
+        if (totalPages > 1) {
+          pagRow.classList.remove('hidden');
+          document.getElementById('paginationInfo').textContent = `Page ${currentPage} of ${totalPages}`;
+          let btns = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+          for (let p = 1; p <= totalPages; p++) {
+            btns += `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`;
+          }
+          btns += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+          document.getElementById('pagination').innerHTML = btns;
+        } else {
+          pagRow.classList.add('hidden');
+        }
+      }
+    }
+
+    function goPage(p) { currentPage = p; render(); }
+
+    // ── Search ────────────────────────────────────────────────────
+    document.getElementById('searchInput').addEventListener('input', e => {
+      currentSearch = e.target.value;
+      currentPage = 1;
+      render();
+    });
+
+    // ── Sort select ───────────────────────────────────────────────
+    document.getElementById('sortSelect').addEventListener('change', e => {
+      currentSort = e.target.value;
+      render();
+    });
+
+    // ── Status tabs ───────────────────────────────────────────────
+    document.getElementById('statusTabs').addEventListener('click', e => {
+      const tab = e.target.closest('.status-tab');
+      if (!tab) return;
+      document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      currentPage = 1;
+      render();
+    });
+
+    // ── Deactivate modal ──────────────────────────────────────────
+    function openDeactivate(id) {
+      const c = campaigns.find(x => x.id === id);
+      if (!c) return;
+      pendingDeactivateId = id;
+      document.getElementById('deactivateCampaignName').textContent = c.name;
+      document.getElementById('deactivateModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDeactivate() {
+      document.getElementById('deactivateModal').classList.remove('open');
+      document.body.style.overflow = '';
+      pendingDeactivateId = null;
+    }
+    document.getElementById('closeDeactivateModal').addEventListener('click', closeDeactivate);
+    document.getElementById('cancelDeactivate').addEventListener('click', closeDeactivate);
+    document.getElementById('confirmDeactivate').addEventListener('click', () => {
+      if (pendingDeactivateId !== null) {
+        const c = campaigns.find(x => x.id === pendingDeactivateId);
+        if (c) c.status = 'deactivated';
+      }
+      closeDeactivate();
+      render();
+    });
+
+    // ── Clone modal ───────────────────────────────────────────────
+    function openClone(id) {
+      const c = campaigns.find(x => x.id === id);
+      if (!c) return;
+      pendingCloneId = id;
+      document.getElementById('cloneCampaignName').textContent = c.name;
+      document.getElementById('cloneModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeClone() {
+      document.getElementById('cloneModal').classList.remove('open');
+      document.body.style.overflow = '';
+      pendingCloneId = null;
+    }
+    document.getElementById('closeCloneModal').addEventListener('click', closeClone);
+    document.getElementById('cancelClone').addEventListener('click', closeClone);
+    document.getElementById('confirmClone').addEventListener('click', () => {
+      if (pendingCloneId !== null) {
+        const src = campaigns.find(x => x.id === pendingCloneId);
+        if (src) {
+          const clone = {
+            ...src,
+            id: campaigns.length + 1,
+            name: 'Copy of ' + src.name,
+            code: src.code + '-COPY',
+            status: 'draft',
+            startDate: null,
+            endDate: null,
+            created: new Date().toISOString().split('T')[0]
+          };
+          campaigns.unshift(clone);
+        }
+      }
+      closeClone();
+      currentFilter = 'all';
+      document.querySelectorAll('.status-tab').forEach(t => t.classList.toggle('active', t.dataset.filter === 'all'));
+      render();
+    });
+
+    // ── View modal ────────────────────────────────────────────────
+    function openView(id) {
+      const c = campaigns.find(x => x.id === id);
+      if (!c) return;
+      const st = computeStatus(c);
+      document.getElementById('viewModalTitle').textContent = c.name;
+      document.getElementById('viewModalBody').innerHTML = `
+        <div class="vm-section">Campaign Identity</div>
+        <div class="vm-row"><span class="vm-label">Campaign Name</span><span class="vm-value">${c.name}</span></div>
+        <div class="vm-row"><span class="vm-label">Campaign Code</span><span class="vm-value"><span class="campaign-code">${c.code}</span></span></div>
+        <div class="vm-row"><span class="vm-label">Status</span><span class="vm-value">${statusBadge(st)}</span></div>
+        <div class="vm-row"><span class="vm-label">Created</span><span class="vm-value">${fmtDate(c.created)}</span></div>
+        <div class="vm-section">Duration</div>
+        <div class="vm-row"><span class="vm-label">Start Date</span><span class="vm-value">${fmtDate(c.startDate)}</span></div>
+        <div class="vm-row"><span class="vm-label">End Date</span><span class="vm-value">${fmtDate(c.endDate)}</span></div>
+        <div class="vm-section">Participation</div>
+        <div class="vm-row"><span class="vm-label">Mode</span><span class="vm-value">${c.participationMode}</span></div>
+        <div class="vm-row"><span class="vm-label">User Group</span><span class="vm-value">${c.userGroup}</span></div>
+        <div class="vm-section">Campaign Criteria</div>
+        <div class="vm-row"><span class="vm-label">Asset Type</span><span class="vm-value">${c.assetType}</span></div>
+        <div class="vm-row"><span class="vm-label">Volume Basis</span><span class="vm-value">${c.volBasis}</span></div>
+        <div class="vm-row"><span class="vm-label">Construct Type</span><span class="vm-value">${c.construct}</span></div>
+      `;
+      document.getElementById('viewModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeView() {
+      document.getElementById('viewModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('closeViewModal').addEventListener('click', closeView);
+    document.getElementById('closeViewModal2').addEventListener('click', closeView);
+
+    // Close modals on backdrop click
+    ['deactivateModal','cloneModal','viewModal'].forEach(id => {
+      document.getElementById(id).addEventListener('click', e => {
+        if (e.target === document.getElementById(id)) {
+          closeDeactivate(); closeClone(); closeView();
+        }
+      });
+    });
+
+    // ── Init ──────────────────────────────────────────────────────
+    render();
+  </script>
+</body>
+</html>
