@@ -1,0 +1,240 @@
+/*
+ * ═══════════════════════════════════════════════════════════════════
+ *  EXCHANGE DESIGN SYSTEM — DESIGN TOKENS
+ *  Source: XDS - Exchange Design System (Figma)
+ *  https://www.figma.com/design/S5vzHnfEkTU1uETKnVOl7x/XDS---Exchange-Design-System
+ *
+ *  Brand Reference: Exchange Brand Playbook (Figma)
+ *  https://www.figma.com/slides/Oyb9M17fbUWZl4C7ZTO3jQ/Exchange-Brand-Playbook
+ *
+ *  Usage: @import './design-system/tokens.css';
+ *  Then reference any token as var(--xds-color-primary), etc.
+ * ═══════════════════════════════════════════════════════════════════
+ */
+
+:root {
+
+  /* ── COLOUR: Brand Core ────────────────────────────────────────── */
+  --xds-color-brand-blue:          #1C6EF2;   /* Primary CTA / Interactive */
+  --xds-color-brand-blue-light:    #4D90F5;
+  --xds-color-brand-blue-dark:     #1457C4;
+  --xds-color-brand-cyan:          #00D2FF;   /* Accent / Charts / Highlights */
+  --xds-color-brand-gold:          #F0B90B;   /* VIP / Premium / Rewards */
+  --xds-color-brand-green:         #0ECB81;   /* Positive / Gains / Success */
+  --xds-color-brand-red:           #F6465D;   /* Negative / Losses / Error */
+
+  /* ── COLOUR: Neutral Scale ─────────────────────────────────────── */
+  --xds-color-neutral-0:           #FFFFFF;
+  --xds-color-neutral-50:          #F5F5F5;
+  --xds-color-neutral-100:         #EBEBEB;
+  --xds-color-neutral-200:         #D4D4D4;
+  --xds-color-neutral-300:         #ADADAD;
+  --xds-color-neutral-400:         #858585;
+  --xds-color-neutral-500:         #5C5C5C;
+  --xds-color-neutral-600:         #3D3D3D;
+  --xds-color-neutral-700:         #2B2B2B;
+  --xds-color-neutral-800:         #1A1A2E;   /* Dark card bg */
+  --xds-color-neutral-900:         #0D0D1C;   /* Darkest bg / page bg */
+  --xds-color-neutral-1000:        #000000;
+
+  /* ── COLOUR: Dark Theme Surface Tokens ─────────────────────────── */
+  --xds-surface-page:              #0D0D1C;   /* Page / root background */
+  --xds-surface-elevated:          #12122A;   /* Cards, panels */
+  --xds-surface-overlay:           #1A1A36;   /* Modals, dropdowns */
+  --xds-surface-border:            #2A2A4A;   /* Dividers, input borders */
+  --xds-surface-hover:             #1E1E3C;   /* Hover state on dark bg */
+  --xds-surface-selected:          rgba(28, 110, 242, 0.15); /* Selected row / tab */
+
+  /* ── COLOUR: Text ──────────────────────────────────────────────── */
+  --xds-text-primary:              #FFFFFF;
+  --xds-text-secondary:            #B0B0C8;
+  --xds-text-tertiary:             #6E6E8A;
+  --xds-text-disabled:             #3D3D5A;
+  --xds-text-inverse:              #0D0D1C;
+  --xds-text-link:                 #4D90F5;
+  --xds-text-positive:             #0ECB81;
+  --xds-text-negative:             #F6465D;
+  --xds-text-warning:              #F0B90B;
+
+  /* ── COLOUR: Semantic / Status ─────────────────────────────────── */
+  --xds-color-success:             #0ECB81;
+  --xds-color-success-bg:          rgba(14, 203, 129, 0.12);
+  --xds-color-success-border:      rgba(14, 203, 129, 0.3);
+
+  --xds-color-error:               #F6465D;
+  --xds-color-error-bg:            rgba(246, 70, 93, 0.12);
+  --xds-color-error-border:        rgba(246, 70, 93, 0.3);
+
+  --xds-color-warning:             #F0B90B;
+  --xds-color-warning-bg:          rgba(240, 185, 11, 0.12);
+  --xds-color-warning-border:      rgba(240, 185, 11, 0.3);
+
+  --xds-color-info:                #1C6EF2;
+  --xds-color-info-bg:             rgba(28, 110, 242, 0.12);
+  --xds-color-info-border:         rgba(28, 110, 242, 0.3);
+
+  /* ── TYPOGRAPHY: Font Family ───────────────────────────────────── */
+  --xds-font-family-base:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --xds-font-family-mono:          'SF Mono', 'Consolas', 'Fira Code', monospace;
+  --xds-font-family-display:       'Inter', sans-serif; /* Headers / Hero */
+
+  /* ── TYPOGRAPHY: Font Weight ───────────────────────────────────── */
+  --xds-font-weight-regular:       400;
+  --xds-font-weight-medium:        500;
+  --xds-font-weight-semibold:      600;
+  --xds-font-weight-bold:          700;
+  --xds-font-weight-extrabold:     800;
+
+  /* ── TYPOGRAPHY: Font Size Scale ───────────────────────────────── */
+  --xds-font-size-xs:              11px;
+  --xds-font-size-sm:              12px;
+  --xds-font-size-base:            14px;
+  --xds-font-size-md:              16px;
+  --xds-font-size-lg:              18px;
+  --xds-font-size-xl:              20px;
+  --xds-font-size-2xl:             24px;
+  --xds-font-size-3xl:             28px;
+  --xds-font-size-4xl:             32px;
+  --xds-font-size-5xl:             40px;
+  --xds-font-size-6xl:             48px;
+
+  /* ── TYPOGRAPHY: Line Height ───────────────────────────────────── */
+  --xds-line-height-tight:         1.2;
+  --xds-line-height-snug:          1.4;
+  --xds-line-height-base:          1.5;
+  --xds-line-height-relaxed:       1.6;
+  --xds-line-height-loose:         1.75;
+
+  /* ── TYPOGRAPHY: Letter Spacing ────────────────────────────────── */
+  --xds-letter-spacing-tight:      -0.02em;
+  --xds-letter-spacing-normal:     0em;
+  --xds-letter-spacing-wide:       0.03em;
+  --xds-letter-spacing-wider:      0.06em;
+  --xds-letter-spacing-caps:       0.08em;   /* Labels / badges in uppercase */
+
+  /* ── SPACING SCALE ─────────────────────────────────────────────── */
+  --xds-space-0:    0px;
+  --xds-space-1:    2px;
+  --xds-space-2:    4px;
+  --xds-space-3:    6px;
+  --xds-space-4:    8px;
+  --xds-space-5:    10px;
+  --xds-space-6:    12px;
+  --xds-space-7:    14px;
+  --xds-space-8:    16px;
+  --xds-space-9:    18px;
+  --xds-space-10:   20px;
+  --xds-space-12:   24px;
+  --xds-space-14:   28px;
+  --xds-space-16:   32px;
+  --xds-space-20:   40px;
+  --xds-space-24:   48px;
+  --xds-space-28:   56px;
+  --xds-space-32:   64px;
+  --xds-space-40:   80px;
+  --xds-space-48:   96px;
+
+  /* ── BORDER RADIUS ─────────────────────────────────────────────── */
+  --xds-radius-none:    0px;
+  --xds-radius-xs:      2px;
+  --xds-radius-sm:      4px;
+  --xds-radius-md:      6px;
+  --xds-radius-lg:      8px;
+  --xds-radius-xl:      12px;
+  --xds-radius-2xl:     16px;
+  --xds-radius-3xl:     24px;
+  --xds-radius-full:    9999px;  /* Pill / badge */
+
+  /* ── BORDER WIDTH ──────────────────────────────────────────────── */
+  --xds-border-width-thin:    1px;
+  --xds-border-width-base:    1.5px;
+  --xds-border-width-thick:   2px;
+
+  /* ── SHADOW / ELEVATION ────────────────────────────────────────── */
+  --xds-shadow-xs:    0 1px 3px rgba(0,0,0,0.3);
+  --xds-shadow-sm:    0 2px 8px rgba(0,0,0,0.4);
+  --xds-shadow-md:    0 4px 16px rgba(0,0,0,0.5);
+  --xds-shadow-lg:    0 8px 32px rgba(0,0,0,0.6);
+  --xds-shadow-xl:    0 16px 48px rgba(0,0,0,0.7);
+  --xds-shadow-glow-blue:   0 0 20px rgba(28, 110, 242, 0.3);
+  --xds-shadow-glow-green:  0 0 20px rgba(14, 203, 129, 0.3);
+  --xds-shadow-glow-gold:   0 0 20px rgba(240, 185, 11, 0.3);
+
+  /* ── COMPONENT TOKENS: Button ──────────────────────────────────── */
+  --xds-btn-height-sm:      32px;
+  --xds-btn-height-md:      40px;
+  --xds-btn-height-lg:      48px;
+  --xds-btn-padding-sm:     0 var(--xds-space-8);
+  --xds-btn-padding-md:     0 var(--xds-space-12);
+  --xds-btn-padding-lg:     0 var(--xds-space-16);
+  --xds-btn-radius:         var(--xds-radius-sm);
+  --xds-btn-font-size:      var(--xds-font-size-base);
+  --xds-btn-font-weight:    var(--xds-font-weight-semibold);
+
+  /* ── COMPONENT TOKENS: Input / Form ───────────────────────────── */
+  --xds-input-height:       44px;
+  --xds-input-height-sm:    36px;
+  --xds-input-bg:           #1A1A36;
+  --xds-input-border:       var(--xds-surface-border);
+  --xds-input-border-focus: var(--xds-color-brand-blue);
+  --xds-input-radius:       var(--xds-radius-sm);
+  --xds-input-padding:      0 var(--xds-space-8);
+  --xds-input-font-size:    var(--xds-font-size-base);
+  --xds-input-color:        var(--xds-text-primary);
+  --xds-input-placeholder:  var(--xds-text-tertiary);
+
+  /* ── COMPONENT TOKENS: Card ────────────────────────────────────── */
+  --xds-card-bg:            var(--xds-surface-elevated);
+  --xds-card-border:        var(--xds-surface-border);
+  --xds-card-radius:        var(--xds-radius-xl);
+  --xds-card-padding:       var(--xds-space-16);
+  --xds-card-shadow:        var(--xds-shadow-md);
+
+  /* ── COMPONENT TOKENS: Badge / Status ──────────────────────────── */
+  --xds-badge-radius:       var(--xds-radius-full);
+  --xds-badge-padding:      2px 10px;
+  --xds-badge-font-size:    var(--xds-font-size-xs);
+  --xds-badge-font-weight:  var(--xds-font-weight-bold);
+  --xds-badge-letter-spacing: var(--xds-letter-spacing-caps);
+
+  /* ── COMPONENT TOKENS: Table ───────────────────────────────────── */
+  --xds-table-header-bg:    rgba(255,255,255,0.04);
+  --xds-table-row-hover:    rgba(255,255,255,0.04);
+  --xds-table-border:       var(--xds-surface-border);
+  --xds-table-cell-height:  48px;
+  --xds-table-header-height:40px;
+
+  /* ── COMPONENT TOKENS: Navigation ──────────────────────────────── */
+  --xds-nav-height:         56px;
+  --xds-nav-bg:             var(--xds-surface-page);
+  --xds-nav-border:         var(--xds-surface-border);
+
+  /* ── COMPONENT TOKENS: Tabs ────────────────────────────────────── */
+  --xds-tab-active-color:      var(--xds-color-brand-blue);
+  --xds-tab-active-border:     var(--xds-color-brand-blue);
+  --xds-tab-inactive-color:    var(--xds-text-secondary);
+  --xds-tab-border-width:      2px;
+
+  /* ── ANIMATION / TRANSITION ────────────────────────────────────── */
+  --xds-transition-fast:    all 0.1s ease;
+  --xds-transition-base:    all 0.2s ease;
+  --xds-transition-slow:    all 0.3s ease;
+  --xds-transition-bounce:  all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Z-INDEX SCALE ─────────────────────────────────────────────── */
+  --xds-z-base:       0;
+  --xds-z-raised:     10;
+  --xds-z-dropdown:   100;
+  --xds-z-sticky:     200;
+  --xds-z-overlay:    300;
+  --xds-z-modal:      400;
+  --xds-z-toast:      500;
+  --xds-z-tooltip:    600;
+
+  /* ── BREAKPOINTS (reference only — use in media queries) ────────── */
+  /* --xds-bp-sm:  480px  */
+  /* --xds-bp-md:  768px  */
+  /* --xds-bp-lg:  1024px */
+  /* --xds-bp-xl:  1280px */
+  /* --xds-bp-2xl: 1440px */
+}

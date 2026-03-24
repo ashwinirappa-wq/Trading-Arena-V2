@@ -1,0 +1,93 @@
+---
+description: Exchange Design System rules — apply whenever building, editing, or generating any prototype HTML/CSS for the Exchange platform.
+globs: ["*.html", "*.css", "**/*.html", "**/*.css"]
+alwaysApply: true
+---
+
+# Exchange Design System — Mandatory Prototype Rules
+
+## Figma Sources (always reference first)
+- **XDS Exchange Design System:** https://www.figma.com/design/S5vzHnfEkTU1uETKnVOl7x/XDS---Exchange-Design-System
+- **Exchange Brand Playbook:** https://www.figma.com/slides/Oyb9M17fbUWZl4C7ZTO3jQ/Exchange-Brand-Playbook
+
+## Rule 1 — Always import the design system
+Every new prototype HTML file MUST import both CSS files at the top:
+
+```html
+<link rel="stylesheet" href="./design-system/tokens.css">
+<link rel="stylesheet" href="./design-system/components.css">
+```
+
+If the prototype is in a subdirectory, adjust the path accordingly (e.g. `../design-system/tokens.css`).
+
+## Rule 2 — Use design tokens for all visual properties
+Never hardcode colours, spacing, font sizes, border radii, or shadows. Always use `var(--xds-*)` tokens:
+
+```css
+/* ✅ Correct */
+background: var(--xds-surface-elevated);
+color: var(--xds-text-primary);
+padding: var(--xds-space-12);
+border-radius: var(--xds-radius-lg);
+font-size: var(--xds-font-size-base);
+
+/* ❌ Never do this */
+background: #1A1A36;
+color: white;
+padding: 24px;
+```
+
+## Rule 3 — Dark theme by default
+All Exchange prototypes use a dark theme. The page root must always be:
+
+```css
+body {
+  background: var(--xds-surface-page);   /* #0D0D1C */
+  color: var(--xds-text-primary);
+}
+```
+
+Never use light backgrounds on Exchange surfaces.
+
+## Rule 4 — Use component classes for standard elements
+Use `.xds-*` classes for all standard UI components before writing custom CSS:
+
+- Buttons: `.xds-btn .xds-btn-primary` / `.xds-btn-secondary` / `.xds-btn-ghost` / `.xds-btn-danger`
+- Cards: `.xds-card`
+- Inputs: `.xds-input`, `.xds-select`, `.xds-textarea`
+- Status badges: `.xds-badge .xds-badge-active` / `.xds-badge-scheduled` / `.xds-badge-draft` / `.xds-badge-ended` / `.xds-badge-deactivated`
+- Tables: `.xds-table`, `.xds-table-wrap`
+- Tabs: `.xds-tabs`, `.xds-tab`
+- Navigation: `.xds-nav`
+- Info blocks: `.xds-info-block` (add `.success`, `.warning`, `.error`, `.purple` modifiers)
+- Modals: `.xds-modal-overlay`, `.xds-modal`
+
+## Rule 5 — Typography
+Always use Inter font. Apply it via `var(--xds-font-family-base)`.
+Use typographic utility classes for headings: `.xds-h1` through `.xds-h5`, `.xds-body`, `.xds-label`.
+
+## Rule 6 — Spacing
+Use the spacing scale exclusively. Never invent arbitrary pixel values:
+`--xds-space-2 (4px)` → `--xds-space-4 (8px)` → `--xds-space-6 (12px)` → `--xds-space-8 (16px)` → `--xds-space-12 (24px)` → `--xds-space-16 (32px)`
+
+## Rule 7 — Colour meaning
+Respect semantic colour assignments:
+- `--xds-color-brand-blue` → primary interactive / CTA only
+- `--xds-color-brand-green` → positive values, gains, success states
+- `--xds-color-brand-red` → negative values, losses, errors, destructive actions
+- `--xds-color-brand-gold` → VIP, premium, rewards
+- `--xds-color-brand-cyan` → data charts, highlights, accents
+
+## Rule 8 — Status badges for campaign states
+Always use the XDS badge classes for campaign lifecycle states:
+- Draft → `.xds-badge .xds-badge-draft`
+- Scheduled → `.xds-badge .xds-badge-scheduled`
+- Active → `.xds-badge .xds-badge-active`
+- Ended → `.xds-badge .xds-badge-ended`
+- Deactivated → `.xds-badge .xds-badge-deactivated`
+
+## Rule 9 — Navigation
+All pages must have a top nav using `.xds-nav` with the Exchange brand icon and name.
+
+## Rule 10 — When the design system doesn't cover something
+If a component is not in the design system CSS files, check the Figma XDS file first before inventing a style. Build the new component using existing tokens. Never introduce new colour values, font sizes, or spacing values that don't come from the token scale.
