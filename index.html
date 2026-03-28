@@ -451,6 +451,8 @@
               <div class="checkbox-group" id="assetTypeGroup">
                 <label class="checkbox-item"><input type="checkbox" name="assetType" value="spot"> All Spot</label>
                 <label class="checkbox-item"><input type="checkbox" name="assetType" value="perps"> All Perps</label>
+                <label class="checkbox-item"><input type="checkbox" name="assetType" value="commodities"> All Commodities</label>
+                <label class="checkbox-item"><input type="checkbox" name="assetType" value="us-tradefi"> All US TradeFi (Stocks &amp; Indices)</label>
                 <label class="checkbox-item"><input type="checkbox" name="assetType" value="token-pairs"> Eligible Token Pairs</label>
               </div>
             </div>
@@ -2723,8 +2725,15 @@
       });
 
       document.querySelectorAll('input[name="assetType"]').forEach(c => c.addEventListener('change', function() {
-        const checked = Array.from(document.querySelectorAll('input[name="assetType"]:checked'));
-        if (checked.length > 2) this.checked = false;
+        const tokenPairsBox = document.querySelector('input[name="assetType"][value="token-pairs"]');
+        const assetBoxes    = Array.from(document.querySelectorAll('input[name="assetType"]')).filter(x => x.value !== 'token-pairs');
+        if (this.value === 'token-pairs' && this.checked) {
+          // Eligible Token Pairs selected → uncheck all asset types
+          assetBoxes.forEach(x => x.checked = false);
+        } else if (this.value !== 'token-pairs' && this.checked) {
+          // Any asset type selected → uncheck Eligible Token Pairs
+          if (tokenPairsBox) tokenPairsBox.checked = false;
+        }
         applyConditionalLogic();
       }));
 

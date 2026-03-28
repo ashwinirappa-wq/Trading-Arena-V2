@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winner Takes All — Trade the Most, Win Everything</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./design-system/tokens.css">
+  <link rel="stylesheet" href="./design-system/components.css">
+
+  <style>
+    /* ── Page Layout ── */
+    body {
+      background: var(--xds-surface-page);
+      color: var(--xds-text-primary);
+      margin: 0;
+      padding: 0;
+    }
+
+    .page-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 var(--xds-space-16);
+    }
+
+    /* ── Dev View Toggle ── */
+    .dev-toggle-bar {
+      background: var(--xds-surface-overlay);
+      border-bottom: 1px solid var(--xds-surface-border);
+      padding: var(--xds-space-4) var(--xds-space-16);
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-8);
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .dev-toggle-bar span { font-weight: var(--xds-font-weight-bold); color: var(--xds-text-secondary); }
+    .dev-view-btn {
+      padding: var(--xds-space-2) var(--xds-space-6);
+      border-radius: var(--xds-radius-sm);
+      border: 1px solid var(--xds-surface-border);
+      background: transparent;
+      color: var(--xds-text-tertiary);
+      font-size: var(--xds-font-size-xs);
+      cursor: pointer;
+      transition: var(--xds-transition-base);
+    }
+    .dev-view-btn.active { background: var(--xds-color-brand-blue); color: #fff; border-color: var(--xds-color-brand-blue); }
+
+    /* ── Navigation ── */
+    .xds-nav {
+      background: var(--xds-surface-elevated);
+      border-bottom: 1px solid var(--xds-surface-border);
+      padding: 0 var(--xds-space-16);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-8);
+    }
+    .xds-nav-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-4);
+      font-weight: var(--xds-font-weight-bold);
+      font-size: var(--xds-font-size-md);
+      color: var(--xds-text-primary);
+      text-decoration: none;
+    }
+    .xds-nav-brand-icon {
+      width: 28px; height: 28px;
+      background: var(--xds-color-brand-blue);
+      border-radius: var(--xds-radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--xds-font-size-base);
+      font-weight: var(--xds-font-weight-bold);
+    }
+    .xds-nav-spacer { flex: 1; }
+    .xds-nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-12);
+      font-size: var(--xds-font-size-base);
+      color: var(--xds-text-secondary);
+    }
+    .xds-nav-links a {
+      color: var(--xds-text-secondary);
+      text-decoration: none;
+      transition: var(--xds-transition-base);
+    }
+    .xds-nav-links a:hover { color: var(--xds-text-primary); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #0D0D2E 0%, var(--xds-surface-page) 100%);
+      padding: var(--xds-space-48) 0 var(--xds-space-40);
+      text-align: center;
+    }
+    .hero-bg-glow {
+      position: absolute;
+      top: -80px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse at center, rgba(240, 185, 11, 0.14) 0%, rgba(28, 110, 242, 0.08) 50%, transparent 80%);
+      pointer-events: none;
+    }
+    .hero-icon {
+      font-size: 64px;
+      line-height: 1;
+      margin-bottom: var(--xds-space-8);
+      filter: drop-shadow(0 0 24px rgba(240, 185, 11, 0.6));
+      display: block;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--xds-space-4);
+      background: var(--xds-color-warning-bg);
+      border: 1px solid var(--xds-color-warning-border);
+      color: var(--xds-color-brand-gold);
+      padding: var(--xds-space-2) var(--xds-space-8);
+      border-radius: var(--xds-radius-full);
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      margin-bottom: var(--xds-space-12);
+    }
+    .hero-headline {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: var(--xds-font-weight-extrabold);
+      line-height: var(--xds-line-height-tight);
+      letter-spacing: var(--xds-letter-spacing-tight);
+      color: var(--xds-text-primary);
+      max-width: 700px;
+      margin: 0 auto var(--xds-space-8);
+    }
+    .hero-headline .highlight {
+      background: linear-gradient(135deg, var(--xds-color-brand-gold), #FFD700);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: var(--xds-font-size-md);
+      color: var(--xds-text-secondary);
+      line-height: var(--xds-line-height-relaxed);
+      max-width: 560px;
+      margin: 0 auto var(--xds-space-24);
+    }
+
+    /* Countdown */
+    .hero-countdown-label {
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      margin-bottom: var(--xds-space-6);
+    }
+    .countdown-wrap {
+      display: inline-flex;
+      gap: var(--xds-space-4);
+      align-items: center;
+      margin-bottom: var(--xds-space-24);
+    }
+    .countdown-unit {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-lg);
+      padding: var(--xds-space-8) var(--xds-space-12);
+      min-width: 68px;
+      text-align: center;
+    }
+    .countdown-unit .val {
+      display: block;
+      font-size: var(--xds-font-size-2xl);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-primary);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .countdown-unit .lbl {
+      display: block;
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: var(--xds-letter-spacing-caps);
+      margin-top: var(--xds-space-2);
+    }
+    .countdown-sep {
+      font-size: var(--xds-font-size-2xl);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-tertiary);
+      padding-bottom: 10px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--xds-space-8);
+      flex-wrap: wrap;
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: var(--xds-space-40) 0;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--xds-space-32);
+    }
+    .section-eyebrow {
+      display: inline-block;
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      color: var(--xds-color-brand-cyan);
+      margin-bottom: var(--xds-space-6);
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--xds-surface-border);
+      margin: 0;
+    }
+
+    /* ── Prize Section ── */
+    .prize-card {
+      position: relative;
+      background: linear-gradient(135deg, #1A1A36 0%, #12122A 100%);
+      border: 1.5px solid rgba(240, 185, 11, 0.4);
+      border-radius: var(--xds-radius-2xl);
+      padding: var(--xds-space-32);
+      box-shadow: 0 0 40px rgba(240, 185, 11, 0.1), var(--xds-shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-32);
+      overflow: hidden;
+    }
+    .prize-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--xds-color-brand-gold), transparent);
+    }
+    .prize-visual {
+      flex-shrink: 0;
+      width: 220px; height: 220px;
+      border-radius: var(--xds-radius-xl);
+      background: linear-gradient(135deg, rgba(240, 185, 11, 0.15), rgba(240, 185, 11, 0.05));
+      border: 1px solid rgba(240, 185, 11, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      position: relative;
+    }
+    .prize-rank-badge {
+      position: absolute;
+      top: -10px; left: -10px;
+      background: var(--xds-color-brand-gold);
+      color: var(--xds-text-inverse);
+      font-size: var(--xds-font-size-sm);
+      font-weight: var(--xds-font-weight-extrabold);
+      padding: var(--xds-space-2) var(--xds-space-6);
+      border-radius: var(--xds-radius-full);
+      line-height: 1.4;
+    }
+    .prize-info { flex: 1; }
+    .prize-title {
+      font-size: var(--xds-font-size-3xl);
+      font-weight: var(--xds-font-weight-extrabold);
+      color: var(--xds-text-primary);
+      margin: 0 0 var(--xds-space-8);
+    }
+    .prize-amount {
+      font-size: 52px;
+      font-weight: var(--xds-font-weight-extrabold);
+      color: var(--xds-color-brand-gold);
+      line-height: 1;
+      letter-spacing: var(--xds-letter-spacing-tight);
+      margin-bottom: var(--xds-space-8);
+      text-shadow: var(--xds-shadow-glow-gold);
+    }
+    .prize-desc {
+      font-size: var(--xds-font-size-base);
+      color: var(--xds-text-secondary);
+      line-height: var(--xds-line-height-relaxed);
+      max-width: 480px;
+      margin-bottom: var(--xds-space-16);
+    }
+    .prize-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--xds-space-4);
+    }
+    .prize-tag {
+      background: rgba(240, 185, 11, 0.1);
+      border: 1px solid rgba(240, 185, 11, 0.25);
+      color: var(--xds-color-brand-gold);
+      padding: var(--xds-space-2) var(--xds-space-6);
+      border-radius: var(--xds-radius-full);
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-semibold);
+    }
+
+    /* ── How It Works ── */
+    .hiw-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--xds-space-8);
+      margin-bottom: var(--xds-space-24);
+    }
+    .hiw-stat-card {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      padding: var(--xds-space-16) var(--xds-space-20);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--xds-space-12);
+    }
+    .hiw-stat-icon {
+      font-size: 24px;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .hiw-stat-label {
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-tertiary);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      margin-bottom: var(--xds-space-2);
+    }
+    .hiw-stat-value {
+      font-size: var(--xds-font-size-base);
+      font-weight: var(--xds-font-weight-semibold);
+      color: var(--xds-text-primary);
+    }
+
+    .hiw-steps {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      padding: var(--xds-space-24) var(--xds-space-28);
+      margin-bottom: var(--xds-space-16);
+    }
+    .hiw-steps-title {
+      font-size: var(--xds-font-size-sm);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-secondary);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      margin-bottom: var(--xds-space-16);
+    }
+    .hiw-step {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--xds-space-12);
+      padding: var(--xds-space-12) 0;
+      border-bottom: 1px solid var(--xds-surface-border);
+    }
+    .hiw-step:last-child { border-bottom: none; }
+    .hiw-step-num {
+      width: 28px; height: 28px;
+      background: var(--xds-color-info-bg);
+      border: 1px solid var(--xds-color-info-border);
+      border-radius: var(--xds-radius-full);
+      display: flex; align-items: center; justify-content: center;
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-color-brand-blue);
+      flex-shrink: 0;
+    }
+    .hiw-step-content { flex: 1; }
+    .hiw-step-title {
+      font-size: var(--xds-font-size-base);
+      font-weight: var(--xds-font-weight-semibold);
+      color: var(--xds-text-primary);
+      margin-bottom: var(--xds-space-2);
+    }
+    .hiw-step-desc {
+      font-size: var(--xds-font-size-sm);
+      color: var(--xds-text-secondary);
+      line-height: var(--xds-line-height-relaxed);
+    }
+
+    /* Example Box */
+    .example-box {
+      background: rgba(28, 110, 242, 0.06);
+      border: 1px solid var(--xds-color-info-border);
+      border-radius: var(--xds-radius-xl);
+      padding: var(--xds-space-20) var(--xds-space-24);
+    }
+    .example-box-title {
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-tertiary);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      margin-bottom: var(--xds-space-12);
+    }
+    .example-rows { display: flex; flex-direction: column; gap: var(--xds-space-6); }
+    .example-row {
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-12);
+      padding: var(--xds-space-8) var(--xds-space-12);
+      border-radius: var(--xds-radius-md);
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+    }
+    .example-row.winner {
+      background: rgba(14, 203, 129, 0.07);
+      border-color: var(--xds-color-success-border);
+    }
+    .example-row.loser {
+      opacity: 0.6;
+    }
+    .example-rank-col {
+      font-size: var(--xds-font-size-sm);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-tertiary);
+      width: 60px;
+    }
+    .example-rank-col.gold { color: var(--xds-color-brand-gold); }
+    .example-trader {
+      flex: 1;
+      font-size: var(--xds-font-size-sm);
+      color: var(--xds-text-secondary);
+    }
+    .example-volume {
+      font-size: var(--xds-font-size-sm);
+      font-weight: var(--xds-font-weight-semibold);
+      color: var(--xds-text-primary);
+      font-variant-numeric: tabular-nums;
+      width: 160px;
+      text-align: right;
+    }
+    .example-result {
+      font-size: var(--xds-font-size-sm);
+      font-weight: var(--xds-font-weight-semibold);
+      width: 160px;
+      text-align: right;
+    }
+    .example-result.win { color: var(--xds-color-brand-green); }
+    .example-result.lose { color: var(--xds-text-tertiary); }
+
+    /* ── FAQ ── */
+    .faq-list { display: flex; flex-direction: column; gap: var(--xds-space-4); }
+    .faq-item {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      overflow: hidden;
+      transition: var(--xds-transition-base);
+    }
+    .faq-item:hover { border-color: var(--xds-color-brand-blue); }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      padding: var(--xds-space-16) var(--xds-space-20);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--xds-space-12);
+      cursor: pointer;
+      text-align: left;
+      color: var(--xds-text-primary);
+      font-family: var(--xds-font-family-base);
+      font-size: var(--xds-font-size-base);
+      font-weight: var(--xds-font-weight-semibold);
+    }
+    .faq-chevron {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      color: var(--xds-text-tertiary);
+      transition: transform 0.2s ease;
+    }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-a {
+      display: none;
+      padding: 0 var(--xds-space-20) var(--xds-space-16);
+      font-size: var(--xds-font-size-base);
+      color: var(--xds-text-secondary);
+      line-height: var(--xds-line-height-relaxed);
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── My Stats Widget (Logged In) ── */
+    .stats-widget {
+      background: linear-gradient(135deg, #1A1A36 0%, #12122A 100%);
+      border: 1.5px solid var(--xds-color-brand-blue);
+      border-radius: var(--xds-radius-2xl);
+      padding: var(--xds-space-24);
+      box-shadow: var(--xds-shadow-glow-blue), var(--xds-shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .stats-widget::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--xds-color-brand-blue), var(--xds-color-brand-cyan), var(--xds-color-brand-blue));
+    }
+    .stats-widget-title {
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+      color: var(--xds-color-brand-cyan);
+      margin-bottom: var(--xds-space-16);
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-6);
+    }
+    .stats-widget-title .live-dot {
+      width: 7px; height: 7px;
+      background: var(--xds-color-brand-green);
+      border-radius: 50%;
+      animation: xds-pulse 1.5s infinite;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--xds-space-4);
+      margin-bottom: var(--xds-space-16);
+    }
+    .stats-cell {
+      background: rgba(255,255,255,0.04);
+      border-radius: var(--xds-radius-lg);
+      padding: var(--xds-space-12) var(--xds-space-16);
+    }
+    .stats-cell-label {
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+      margin-bottom: var(--xds-space-3);
+      font-weight: var(--xds-font-weight-medium);
+    }
+    .stats-cell-value {
+      font-size: var(--xds-font-size-xl);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+    .stats-cell-value.positive { color: var(--xds-color-brand-green); }
+    .stats-cell-value.gold { color: var(--xds-color-brand-gold); }
+    .stats-cell-sub {
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+      margin-top: 2px;
+    }
+
+    /* Progress bar */
+    .stats-progress-wrap { margin-bottom: var(--xds-space-12); }
+    .stats-progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--xds-space-6);
+    }
+    .stats-progress-label {
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+    }
+    .stats-progress-pct {
+      font-size: var(--xds-font-size-sm);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-color-brand-cyan);
+    }
+    .stats-progress-track {
+      background: var(--xds-surface-border);
+      border-radius: var(--xds-radius-full);
+      height: 8px;
+      overflow: hidden;
+    }
+    .stats-progress-fill {
+      height: 100%;
+      border-radius: var(--xds-radius-full);
+      background: linear-gradient(90deg, var(--xds-color-brand-blue), var(--xds-color-brand-cyan));
+      transition: width 0.6s ease;
+    }
+
+    .stats-alert {
+      background: rgba(240, 185, 11, 0.08);
+      border: 1px solid rgba(240, 185, 11, 0.2);
+      border-radius: var(--xds-radius-lg);
+      padding: var(--xds-space-10) var(--xds-space-12);
+      font-size: var(--xds-font-size-sm);
+      color: var(--xds-color-brand-gold);
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-6);
+    }
+    .stats-alert.leading {
+      background: rgba(14, 203, 129, 0.08);
+      border-color: var(--xds-color-success-border);
+      color: var(--xds-color-brand-green);
+    }
+
+    /* Today's volume chip */
+    .today-vol-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--xds-space-4);
+      background: rgba(14, 203, 129, 0.1);
+      border: 1px solid var(--xds-color-success-border);
+      color: var(--xds-color-brand-green);
+      padding: var(--xds-space-2) var(--xds-space-8);
+      border-radius: var(--xds-radius-full);
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-semibold);
+    }
+
+    /* ── Leaderboard ── */
+    .leaderboard-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--xds-space-12);
+      margin-bottom: var(--xds-space-12);
+      flex-wrap: wrap;
+    }
+    .leaderboard-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--xds-space-4);
+      background: rgba(14, 203, 129, 0.1);
+      border: 1px solid var(--xds-color-success-border);
+      color: var(--xds-color-brand-green);
+      padding: var(--xds-space-2) var(--xds-space-8);
+      border-radius: var(--xds-radius-full);
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      letter-spacing: var(--xds-letter-spacing-caps);
+      text-transform: uppercase;
+    }
+    .leaderboard-live-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--xds-color-brand-green);
+      border-radius: 50%;
+      animation: xds-pulse 1.5s infinite;
+    }
+    .leaderboard-updated {
+      font-size: var(--xds-font-size-xs);
+      color: var(--xds-text-tertiary);
+    }
+    .leaderboard-search-wrap {
+      position: relative;
+      width: 220px;
+    }
+    .leaderboard-search-wrap input {
+      width: 100%;
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      color: var(--xds-text-primary);
+      padding: var(--xds-space-4) var(--xds-space-8) var(--xds-space-4) var(--xds-space-28);
+      border-radius: var(--xds-radius-md);
+      font-family: var(--xds-font-family-base);
+      font-size: var(--xds-font-size-sm);
+      outline: none;
+    }
+    .leaderboard-search-wrap input:focus { border-color: var(--xds-color-brand-blue); }
+    .leaderboard-search-icon {
+      position: absolute;
+      left: var(--xds-space-8); top: 50%; transform: translateY(-50%);
+      color: var(--xds-text-tertiary);
+      font-size: 13px;
+      pointer-events: none;
+    }
+
+    /* Table custom overrides */
+    .xds-table tbody tr.my-row {
+      background: var(--xds-surface-selected);
+    }
+    .xds-table tbody tr.my-row td { color: var(--xds-text-primary); }
+    .xds-table tbody tr.rank-1 td:first-child { color: var(--xds-color-brand-gold); }
+
+    .rank-trophy { font-size: 16px; }
+    .trader-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      background: var(--xds-surface-overlay);
+      border-radius: 50%;
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-text-secondary);
+      margin-right: var(--xds-space-6);
+      border: 1px solid var(--xds-surface-border);
+      flex-shrink: 0;
+    }
+    .trader-cell {
+      display: flex;
+      align-items: center;
+    }
+    .trader-name-you {
+      font-size: var(--xds-font-size-xs);
+      background: var(--xds-color-info-bg);
+      border: 1px solid var(--xds-color-info-border);
+      color: var(--xds-color-brand-blue);
+      padding: 1px 6px;
+      border-radius: var(--xds-radius-full);
+      margin-left: var(--xds-space-4);
+      font-weight: var(--xds-font-weight-semibold);
+    }
+    .gap-positive { color: var(--xds-color-brand-green); }
+    .gap-negative { color: var(--xds-text-negative); }
+
+    .lb-sticky-row {
+      background: var(--xds-surface-selected);
+      border-top: 2px solid var(--xds-color-brand-blue);
+    }
+    .lb-sticky-row td { color: var(--xds-text-primary) !important; }
+
+    /* Pagination */
+    .lb-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--xds-space-12) var(--xds-space-16);
+      border-top: 1px solid var(--xds-surface-border);
+      font-size: var(--xds-font-size-sm);
+      color: var(--xds-text-tertiary);
+    }
+
+    /* ── Logged-in specific sections ── */
+    .logged-in-section { display: none; }
+    body.logged-in .logged-in-section { display: block; }
+    body.logged-in .logged-out-cta { display: none; }
+
+    /* ── Section separator ── */
+    .section-sep {
+      border: none;
+      border-top: 1px solid var(--xds-surface-border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .prize-card { flex-direction: column; }
+      .prize-visual { width: 160px; height: 160px; font-size: 60px; }
+      .hiw-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-grid { grid-template-columns: 1fr; }
+      .leaderboard-search-wrap { width: 100%; }
+    }
+    @media (max-width: 540px) {
+      .hiw-grid { grid-template-columns: 1fr; }
+      .countdown-wrap { gap: var(--xds-space-2); }
+      .countdown-unit { min-width: 56px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dev Toggle Bar -->
+  <div class="dev-toggle-bar">
+    <span>PROTOTYPE VIEW:</span>
+    <button class="dev-view-btn active" onclick="setView('logged-out')">Logged Out</button>
+    <button class="dev-view-btn" onclick="setView('logged-in')">Logged In</button>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="xds-nav">
+    <a class="xds-nav-brand" href="#">
+      <div class="xds-nav-brand-icon">E</div>
+      Exchange
+    </a>
+    <div class="xds-nav-spacer"></div>
+    <div class="xds-nav-links">
+      <a href="#">Markets</a>
+      <a href="#">Trade</a>
+      <a href="#">Campaigns</a>
+    </div>
+    <div style="margin-left: var(--xds-space-12); display: flex; gap: var(--xds-space-6);">
+      <button class="xds-btn xds-btn-ghost xds-btn-sm logged-out-cta">Log In</button>
+      <button class="xds-btn xds-btn-primary xds-btn-sm logged-out-cta">Sign Up</button>
+      <div class="logged-in-section" style="display:none; align-items:center; gap: var(--xds-space-8);">
+        <span class="today-vol-chip">↑ $1.8M today</span>
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--xds-color-brand-blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">A</div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════
+       HERO
+  ════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="page-content" style="position:relative;">
+      <span class="hero-icon">🏆</span>
+      <div class="hero-eyebrow">🔓 Open Competition · No Minimum</div>
+      <h1 class="hero-headline">
+        Winner Takes All —<br>
+        <span class="highlight">Trade the Most, Win Everything</span>
+      </h1>
+      <p class="hero-sub">
+        The trader with the highest total volume when the campaign ends claims 100% of the prize pool. Every trade counts from Day 1.
+      </p>
+
+      <p class="hero-countdown-label">Campaign ends in</p>
+      <div class="countdown-wrap">
+        <div class="countdown-unit"><span class="val" id="cd-days">05</span><span class="lbl">Days</span></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit"><span class="val" id="cd-hours">14</span><span class="lbl">Hrs</span></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit"><span class="val" id="cd-mins">32</span><span class="lbl">Min</span></div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-unit"><span class="val" id="cd-secs">08</span><span class="lbl">Sec</span></div>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#" class="xds-btn xds-btn-primary xds-btn-lg logged-out-cta">Start Trading</a>
+        <a href="#leaderboard" class="xds-btn xds-btn-ghost xds-btn-lg logged-in-section" style="display:none;">View Leaderboard</a>
+        <a href="#leaderboard" class="xds-btn xds-btn-ghost xds-btn-lg logged-out-cta">View Leaderboard</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-sep">
+
+  <!-- ════════════════════════════════════════════════
+       PRIZES
+  ════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="page-content">
+      <div class="section-header">
+        <span class="section-eyebrow">The Prize</span>
+        <h2 class="xds-h2">Winner Takes All</h2>
+        <p class="xds-body-lg" style="color:var(--xds-text-secondary); margin-top: var(--xds-space-6);">
+          100% of the prize pool goes to a single trader.
+        </p>
+      </div>
+
+      <div class="prize-card">
+        <div class="prize-visual">
+          🏆
+          <div class="prize-rank-badge">#1</div>
+        </div>
+        <div class="prize-info">
+          <h3 class="prize-title">1st Place — Winner Takes All</h3>
+          <div class="prize-amount">$50,000 <span style="font-size:28px;color:var(--xds-text-secondary);">USDT</span></div>
+          <p class="prize-desc">
+            Awarded to the single trader with the highest cumulative trading volume at campaign end. Paid within 7 business days of campaign close. No splits — one winner claims everything.
+          </p>
+          <div class="prize-tags">
+            <span class="prize-tag">100% of Prize Pool</span>
+            <span class="prize-tag">Paid in USDT</span>
+            <span class="prize-tag">Within 7 Business Days</span>
+            <span class="prize-tag">No Minimum Entry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-sep">
+
+  <!-- ════════════════════════════════════════════════
+       HOW IT WORKS
+  ════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="page-content">
+      <div class="section-header">
+        <span class="section-eyebrow">How It Works</span>
+        <h2 class="xds-h2">Simple Rules. One Winner.</h2>
+        <p class="xds-body-lg" style="color:var(--xds-text-secondary); margin-top: var(--xds-space-6);">
+          Cumulative total volume — every dollar traded from Day 1 counts toward your rank.
+        </p>
+      </div>
+
+      <!-- Key Stats -->
+      <div class="hiw-grid">
+        <div class="hiw-stat-card">
+          <div class="hiw-stat-icon">📅</div>
+          <div>
+            <div class="hiw-stat-label">Campaign Period</div>
+            <div class="hiw-stat-value">1 Apr – 30 Apr 2025</div>
+          </div>
+        </div>
+        <div class="hiw-stat-card">
+          <div class="hiw-stat-icon">🏆</div>
+          <div>
+            <div class="hiw-stat-label">Prize</div>
+            <div class="hiw-stat-value" style="color:var(--xds-color-brand-gold);">$50,000 USDT</div>
+          </div>
+        </div>
+        <div class="hiw-stat-card">
+          <div class="hiw-stat-icon">🎯</div>
+          <div>
+            <div class="hiw-stat-label">Target Volume</div>
+            <div class="hiw-stat-value">$100,000,000</div>
+          </div>
+        </div>
+        <div class="hiw-stat-card">
+          <div class="hiw-stat-icon">📊</div>
+          <div>
+            <div class="hiw-stat-label">Volume Type</div>
+            <div class="hiw-stat-value">Cumulative Total</div>
+          </div>
+        </div>
+        <div class="hiw-stat-card">
+          <div class="hiw-stat-icon">🔓</div>
+          <div>
+            <div class="hiw-stat-label">Entry</div>
+            <div class="hiw-stat-value" style="color:var(--xds-color-brand-green);">Open — No Minimum</div>
+          </div>
+        </div>
+        <div class="hiw-stat-card">
+          <div class="hiw-stat-icon">⏰</div>
+          <div>
+            <div class="hiw-stat-label">Cutoff</div>
+            <div class="hiw-stat-value">23:59 UTC, 30 Apr</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="hiw-steps">
+        <div class="hiw-steps-title">How to win</div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">1</div>
+          <div class="hiw-step-content">
+            <div class="hiw-step-title">Trade on eligible pairs</div>
+            <div class="hiw-step-desc">All executed trades on eligible trading pairs count toward your cumulative volume score. Volume = trade notional value in USD.</div>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">2</div>
+          <div class="hiw-step-content">
+            <div class="hiw-step-title">Every dollar trades adds to your score — no resets</div>
+            <div class="hiw-step-desc">Unlike periodic campaigns, your volume accumulates from Day 1 through campaign end. There are no weekly resets or gates to unlock.</div>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">3</div>
+          <div class="hiw-step-content">
+            <div class="hiw-step-title">The single trader with the most volume wins everything</div>
+            <div class="hiw-step-desc">At 23:59 UTC on 30 April, rankings are finalised. The #1 ranked trader by cumulative volume wins $50,000 USDT outright — second place wins nothing.</div>
+          </div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-step-num">4</div>
+          <div class="hiw-step-content">
+            <div class="hiw-step-title">Prize distributed within 7 business days</div>
+            <div class="hiw-step-desc">Winnings are credited to the winner's Exchange account within 7 business days of the campaign end date.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example -->
+      <div class="example-box">
+        <div class="example-box-title">Example Outcome — 30 April 23:59 UTC</div>
+        <div class="example-rows">
+          <div class="example-row winner">
+            <div class="example-rank-col gold">🏆 #1</div>
+            <div class="example-trader">Trader A</div>
+            <div class="example-volume">$88,000,000</div>
+            <div class="example-result win">Wins $50,000 USDT ✅</div>
+          </div>
+          <div class="example-row loser">
+            <div class="example-rank-col">#2</div>
+            <div class="example-trader">Trader B</div>
+            <div class="example-volume">$73,000,000</div>
+            <div class="example-result lose">Wins nothing ❌</div>
+          </div>
+          <div class="example-row loser">
+            <div class="example-rank-col">#3</div>
+            <div class="example-trader">Trader C</div>
+            <div class="example-volume">$41,000,000</div>
+            <div class="example-result lose">Wins nothing ❌</div>
+          </div>
+        </div>
+        <p style="margin:var(--xds-space-12) 0 0; font-size:var(--xds-font-size-sm); color:var(--xds-text-tertiary); line-height:var(--xds-line-height-relaxed);">
+          The entire prize goes to one person. Every trade from Day 1 counts.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-sep">
+
+  <!-- ════════════════════════════════════════════════
+       FAQs
+  ════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="page-content">
+      <div class="section-header">
+        <span class="section-eyebrow">FAQ</span>
+        <h2 class="xds-h2">Common Questions</h2>
+      </div>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            What counts as trading volume?
+            <svg class="faq-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7.5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a">All executed trades on eligible pairs count toward your score. Volume is measured as the trade's notional value in USD. Both buy and sell orders count. Open orders that haven't been executed do not count.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            What if two traders tie on total volume?
+            <svg class="faq-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7.5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a">In the event of a tie, the trader who reached that cumulative volume <em>first</em> wins. The tie-break is applied server-side using last-trade timestamps before rankings are published.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            When are prizes distributed?
+            <svg class="faq-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7.5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a">Prizes are distributed within 7 business days after the campaign ends on 30 April 2025. Winnings are credited directly to your Exchange account in USDT.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Is there a minimum volume to participate?
+            <svg class="faq-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7.5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a">No minimum — any trade on an eligible pair counts toward your score. Start trading immediately and every dollar adds to your cumulative total from Day 1.</div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFAQ(this)">
+            Does volume reset weekly or daily?
+            <svg class="faq-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7.5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a">No. This is a <strong>cumulative total volume</strong> competition — your score is the sum of all volume traded from 1 April 00:00 UTC through 30 April 23:59 UTC. There are no resets.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-sep">
+
+  <!-- ════════════════════════════════════════════════
+       MY STATS WIDGET (Logged In Only)
+  ════════════════════════════════════════════════ -->
+  <section class="section logged-in-section" id="my-stats">
+    <div class="page-content">
+      <div class="section-header">
+        <span class="section-eyebrow">Your Performance</span>
+        <h2 class="xds-h2">My Competition Status</h2>
+      </div>
+
+      <div class="stats-widget">
+        <div class="stats-widget-title">
+          <div class="live-dot"></div>
+          MY COMPETITION STATUS
+        </div>
+
+        <div class="stats-grid">
+          <div class="stats-cell">
+            <div class="stats-cell-label">Your Total Volume</div>
+            <div class="stats-cell-value">$42,500,000</div>
+            <div class="stats-cell-sub">Cumulative since 1 Apr</div>
+          </div>
+          <div class="stats-cell">
+            <div class="stats-cell-label">Your Rank</div>
+            <div class="stats-cell-value gold">#4 <span style="font-size:var(--xds-font-size-sm);color:var(--xds-text-tertiary);font-weight:500;">of 1,240</span></div>
+            <div class="stats-cell-sub">Out of all participants</div>
+          </div>
+          <div class="stats-cell">
+            <div class="stats-cell-label">Campaign Target</div>
+            <div class="stats-cell-value">$100,000,000</div>
+            <div class="stats-cell-sub">Admin-configured target</div>
+          </div>
+          <div class="stats-cell">
+            <div class="stats-cell-label">Today's Volume</div>
+            <div class="stats-cell-value positive">$1,800,000</div>
+            <div class="stats-cell-sub">↑ Traded today (UTC)</div>
+          </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="stats-progress-wrap">
+          <div class="stats-progress-header">
+            <span class="stats-progress-label">Progress toward Target Volume</span>
+            <span class="stats-progress-pct">42%</span>
+          </div>
+          <div class="stats-progress-track">
+            <div class="stats-progress-fill" style="width: 42%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-top:var(--xds-space-2);">
+            <span style="font-size:var(--xds-font-size-xs);color:var(--xds-text-tertiary);">$0</span>
+            <span style="font-size:var(--xds-font-size-xs);color:var(--xds-text-tertiary);">$100,000,000</span>
+          </div>
+        </div>
+
+        <!-- Gap Alert -->
+        <div class="stats-alert" id="gap-alert">
+          ⚡ Trade <strong>$3,200,000 more</strong> to advance to Rank 3 — close the gap before campaign ends.
+        </div>
+
+        <!-- Leading State (hidden by default) -->
+        <div class="stats-alert leading" id="leading-alert" style="display:none;">
+          🏆 You are leading — Lead margin: <strong>$8,200,000</strong> ahead of Rank 2.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       LEADERBOARD (Logged In Only)
+  ════════════════════════════════════════════════ -->
+  <section class="section logged-in-section" id="leaderboard" style="padding-top:0;">
+    <div class="page-content">
+      <div class="section-header">
+        <span class="section-eyebrow">Rankings</span>
+        <h2 class="xds-h2">Leaderboard</h2>
+        <p class="xds-body-lg" style="color:var(--xds-text-secondary); margin-top:var(--xds-space-6);">
+          Sorted by cumulative total volume — descending. All participants shown.
+        </p>
+      </div>
+
+      <div class="xds-card" style="padding:0; overflow:hidden;">
+        <!-- Leaderboard Top Bar -->
+        <div style="padding:var(--xds-space-16) var(--xds-space-16); border-bottom:1px solid var(--xds-surface-border);">
+          <div class="leaderboard-header-bar">
+            <div style="display:flex;align-items:center;gap:var(--xds-space-12);">
+              <div class="leaderboard-live-badge"><div class="dot"></div>LIVE</div>
+              <span class="leaderboard-updated">Last updated 14:32 UTC</span>
+            </div>
+            <div class="leaderboard-search-wrap">
+              <span class="leaderboard-search-icon">🔍</span>
+              <input type="text" placeholder="Search username…" id="lb-search" oninput="filterLeaderboard(this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="xds-table-wrap" style="border-radius:0;border:none;" id="lb-table-wrap">
+          <table class="xds-table" id="lb-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">Rank</th>
+                <th>Trader</th>
+                <th style="text-align:right;">Total Volume</th>
+                <th style="text-align:right;">Gap to Rank Above</th>
+              </tr>
+            </thead>
+            <tbody id="lb-body">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Sticky row separator -->
+        <div id="lb-sticky-container"></div>
+
+        <!-- Pagination -->
+        <div class="lb-pagination">
+          <span id="lb-showing">Showing top 100 of 1,240 traders</span>
+          <div style="display:flex;gap:var(--xds-space-4);">
+            <button class="xds-btn xds-btn-ghost xds-btn-sm" disabled>← Prev</button>
+            <button class="xds-btn xds-btn-ghost xds-btn-sm">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="xds-info-block" style="margin-top:var(--xds-space-12);">
+        Your row is highlighted in blue and pinned at the bottom if you are outside the top 100. Tie-breaks are resolved server-side by earliest timestamp reaching that volume.
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════
+       LOGGED-OUT CTA FOOTER
+  ════════════════════════════════════════════════ -->
+  <section class="section logged-out-cta" style="text-align:center;">
+    <div class="page-content">
+      <div class="xds-card" style="padding:var(--xds-space-40); background:linear-gradient(135deg,#1A1A36,#12122A); border-color:rgba(28,110,242,0.3);">
+        <span style="font-size:48px; display:block; margin-bottom:var(--xds-space-12);">🚀</span>
+        <h3 class="xds-h3" style="margin-bottom:var(--xds-space-8);">Ready to compete?</h3>
+        <p class="xds-body-lg" style="color:var(--xds-text-secondary); margin-bottom:var(--xds-space-20);">No minimum required — every trade from Day 1 counts toward your cumulative total.</p>
+        <a href="#" class="xds-btn xds-btn-primary xds-btn-lg">Start Trading Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer spacing -->
+  <div style="height: var(--xds-space-40);"></div>
+
+
+  <script>
+    /* ── View Toggle ── */
+    function setView(view) {
+      const btns = document.querySelectorAll('.dev-view-btn');
+      btns.forEach((b, i) => b.classList.toggle('active', (i === 0 && view === 'logged-out') || (i === 1 && view === 'logged-in')));
+
+      if (view === 'logged-in') {
+        document.body.classList.add('logged-in');
+        document.querySelectorAll('.logged-in-section').forEach(el => el.style.display = 'block');
+        document.querySelectorAll('.logged-out-cta').forEach(el => el.style.display = 'none');
+      } else {
+        document.body.classList.remove('logged-in');
+        document.querySelectorAll('.logged-in-section').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.logged-out-cta').forEach(el => el.style.display = '');
+      }
+    }
+
+    /* ── Countdown Timer ── */
+    const TARGET = new Date('2025-04-30T23:59:00Z').getTime();
+    function updateCountdown() {
+      const now = Date.now();
+      let diff = Math.max(0, TARGET - now);
+      const days = Math.floor(diff / 86400000); diff -= days * 86400000;
+      const hrs  = Math.floor(diff / 3600000);  diff -= hrs  * 3600000;
+      const mins = Math.floor(diff / 60000);     diff -= mins * 60000;
+      const secs = Math.floor(diff / 1000);
+      document.getElementById('cd-days').textContent  = String(days).padStart(2,'0');
+      document.getElementById('cd-hours').textContent = String(hrs).padStart(2,'0');
+      document.getElementById('cd-mins').textContent  = String(mins).padStart(2,'0');
+      document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* ── FAQ Toggle ── */
+    function toggleFAQ(btn) {
+      const item = btn.closest('.faq-item');
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+
+    /* ── Leaderboard Data ── */
+    const MY_RANK = 4;
+    const MY_TRADER = 'alextrader_88';
+    const leaderboardData = [
+      { rank: 1, name: 'cryptowolf_99',    volume: 51200000 },
+      { rank: 2, name: 'moonshot_pro',     volume: 47800000 },
+      { rank: 3, name: 'velocity_x',       volume: 45700000 },
+      { rank: 4, name: MY_TRADER,          volume: 42500000 },
+      { rank: 5, name: 'deep_alpha_007',   volume: 39200000 },
+      { rank: 6, name: 'traderbeast_io',   volume: 36700000 },
+      { rank: 7, name: 'neon_quant',       volume: 34100000 },
+      { rank: 8, name: 'bigvol_labs',      volume: 31500000 },
+      { rank: 9, name: 'omega_flow',       volume: 29800000 },
+      { rank: 10, name: 'sigma_execute',   volume: 27300000 },
+      { rank: 11, name: 'pulse_trader',    volume: 25900000 },
+      { rank: 12, name: 'delta_hawk',      volume: 24500000 },
+      { rank: 13, name: 'ironhands_q',     volume: 22800000 },
+      { rank: 14, name: 'zephyr_trade',    volume: 21400000 },
+      { rank: 15, name: 'apex_market',     volume: 20100000 },
+    ];
+
+    function formatVol(v) {
+      if (v >= 1_000_000) return '$' + (v / 1_000_000).toFixed(1) + 'M';
+      return '$' + v.toLocaleString();
+    }
+
+    function formatGap(current, above) {
+      if (above === null) return '<span style="color:var(--xds-color-brand-gold)">🏆 Leading</span>';
+      const gap = above - current;
+      if (gap <= 0) return '<span class="gap-positive">Tied / Ahead</span>';
+      return '<span style="color:var(--xds-text-negative)">-' + formatVol(gap) + '</span>';
+    }
+
+    function renderLeaderboard(data) {
+      const tbody = document.getElementById('lb-body');
+      tbody.innerHTML = data.map((row, idx) => {
+        const isMe = row.name === MY_TRADER;
+        const above = idx > 0 ? data[idx - 1].volume : null;
+        const rankDisplay = row.rank === 1
+          ? '<span class="rank-trophy">🏆</span> #1'
+          : '#' + row.rank;
+        const traderDisplay = isMe
+          ? `<div class="trader-cell"><div class="trader-avatar">${row.name.charAt(0).toUpperCase()}</div>${row.name}<span class="trader-name-you">You</span></div>`
+          : `<div class="trader-cell"><div class="trader-avatar">${row.name.charAt(0).toUpperCase()}</div>${row.name}</div>`;
+
+        return `<tr class="${isMe ? 'my-row' : ''} ${row.rank === 1 ? 'rank-1' : ''}">
+          <td style="font-weight:600;">${rankDisplay}</td>
+          <td>${traderDisplay}</td>
+          <td style="text-align:right;font-variant-numeric:tabular-nums;font-weight:600;">${formatVol(row.volume)}</td>
+          <td style="text-align:right;">${formatGap(row.volume, above)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function filterLeaderboard(query) {
+      const q = query.toLowerCase().trim();
+      const filtered = q
+        ? leaderboardData.filter(r => r.name.toLowerCase().includes(q) || r.rank === MY_RANK)
+        : leaderboardData;
+      renderLeaderboard(filtered);
+      document.getElementById('lb-showing').textContent = q
+        ? `Showing ${filtered.length} results`
+        : 'Showing top 100 of 1,240 traders';
+    }
+
+    renderLeaderboard(leaderboardData);
+  </script>
+</body>
+</html>

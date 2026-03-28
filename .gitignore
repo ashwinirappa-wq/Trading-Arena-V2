@@ -1,0 +1,35 @@
+# Environment & Credentials
+.env
+.env.local
+.env.*.local
+
+# Generated Figma files
+figma-data.json
+figma-tokens.json
+tokens-for-figma-import.json
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+out/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*

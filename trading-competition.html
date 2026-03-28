@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Competition — Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./design-system/tokens.css">
+  <link rel="stylesheet" href="./design-system/components.css">
+  <style>
+    /* ── Page system ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Sticky nav override ── */
+    .xds-nav {
+      position: sticky;
+      top: 0;
+      z-index: var(--xds-z-sticky);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 0 var(--xds-space-12);
+      justify-content: flex-start;
+      gap: 0;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-4);
+      margin-right: var(--xds-space-16);
+      cursor: pointer;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--xds-space-1);
+      flex: 1;
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--xds-space-2);
+      padding: var(--xds-space-3) var(--xds-space-5);
+      font-size: var(--xds-font-size-sm);
+      color: var(--xds-text-secondary);
+      cursor: pointer;
+      border-radius: var(--xds-radius-sm);
+      border: none;
+      background: none;
+      transition: var(--xds-transition-fast);
+      white-space: nowrap;
+      font-family: var(--xds-font-family-base);
+    }
+    .nav-link:hover { color: var(--xds-text-primary); background: var(--xds-surface-hover); }
+    .nav-caret { font-size: 9px; opacity: 0.5; }
+    .nav-right { display: flex; align-items: center; gap: var(--xds-space-4); flex-shrink: 0; }
+    .nav-icon-btn {
+      width: 30px; height: 30px;
+      border-radius: var(--xds-radius-full);
+      background: none; border: none;
+      color: var(--xds-text-secondary);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
+      transition: var(--xds-transition-fast);
+    }
+    .nav-icon-btn:hover { background: var(--xds-surface-hover); color: var(--xds-text-primary); }
+    .nav-avatar {
+      width: 28px; height: 28px; border-radius: var(--xds-radius-full);
+      background: var(--xds-surface-overlay);
+      border: 1px solid var(--xds-surface-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--xds-text-secondary); cursor: pointer;
+    }
+
+    /* ══════════════════════════════════════════════
+       HUB PAGE
+    ══════════════════════════════════════════════ */
+
+    /* Hub hero banner */
+    .hub-hero {
+      position: relative;
+      overflow: hidden;
+      background: var(--xds-color-neutral-900);
+      min-height: 200px;
+    }
+    .hub-hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 15% 60%, rgba(28,110,242,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 35%, rgba(80,20,120,0.3) 0%, transparent 50%),
+        linear-gradient(160deg, #0e0e22 0%, var(--xds-surface-page) 100%);
+    }
+    .hub-hero-inner {
+      position: relative; z-index: 1;
+      max-width: 1160px; margin: 0 auto;
+      padding: var(--xds-space-20) var(--xds-space-12) var(--xds-space-20);
+      display: flex; align-items: center;
+    }
+    .hub-hero-text { max-width: 380px; }
+    .hub-hero-title {
+      font-size: var(--xds-font-size-5xl);
+      font-weight: var(--xds-font-weight-bold);
+      line-height: var(--xds-line-height-tight);
+      color: var(--xds-text-primary);
+      margin-bottom: var(--xds-space-4);
+    }
+    .hub-hero-sub { font-size: var(--xds-font-size-base); color: var(--xds-text-secondary); }
+    .hub-hero-sub strong { color: var(--xds-color-brand-gold); }
+
+    /* Trophy CSS */
+    .hub-trophy {
+      position: absolute; right: 8%;
+      top: 50%; transform: translateY(-50%);
+      width: 160px; height: 190px;
+      filter: drop-shadow(0 0 24px rgba(240,185,11,0.25));
+    }
+    .trophy-cup {
+      position: absolute; left: 50%; top: 8px;
+      transform: translateX(-50%);
+      width: 88px; height: 96px;
+      background: radial-gradient(circle at 38% 30%, #f5d060, #c8920a, #7a5400);
+      border-radius: 48% 48% 22% 22% / 45% 45% 22% 22%;
+      box-shadow: 0 0 28px rgba(240,185,11,0.35), inset 0 -12px 20px rgba(0,0,0,0.45);
+    }
+    .trophy-cup::before {
+      content: ''; position: absolute;
+      top: 14px; left: 14px; right: 14px; height: 2px;
+      background: rgba(255,255,255,0.22); border-radius: 50%;
+    }
+    .trophy-cup::after {
+      content: ''; position: absolute;
+      top: 24px; left: 18px; right: 18px; height: 1.5px;
+      background: rgba(255,255,255,0.12); border-radius: 50%;
+    }
+    .trophy-hl { position: absolute; left: 50%; top: 20px; transform: translateX(-62px); width: 17px; height: 38px; border: 5px solid #9a6c08; border-right: none; border-radius: 9px 0 0 9px; }
+    .trophy-hr { position: absolute; left: 50%; top: 20px; transform: translateX(45px); width: 17px; height: 38px; border: 5px solid #9a6c08; border-left: none; border-radius: 0 9px 9px 0; }
+    .trophy-stem { position: absolute; left: 50%; top: 100px; transform: translateX(-50%); width: 15px; height: 28px; background: linear-gradient(180deg, #9a7010, #6a4800); }
+    .trophy-base { position: absolute; left: 50%; top: 122px; transform: translateX(-50%); width: 58px; height: 12px; background: linear-gradient(180deg, #9a7010, #6a4800); border-radius: var(--xds-radius-xs); box-shadow: 0 4px 12px rgba(0,0,0,0.6); }
+
+    /* Hub tabs bar */
+    .hub-tabs-bar {
+      border-bottom: 1px solid var(--xds-surface-border);
+      background: var(--xds-surface-page);
+    }
+    .hub-tabs-inner { max-width: 1160px; margin: 0 auto; padding: 0 var(--xds-space-12); }
+
+    /* Hub body */
+    .hub-body { max-width: 1160px; margin: 0 auto; padding: var(--xds-space-12); }
+    .hub-tab-pane { display: none; }
+    .hub-tab-pane.active { display: block; }
+
+    /* My Rewards card */
+    .my-rewards-card {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      padding: var(--xds-space-10) var(--xds-space-12);
+      margin-bottom: var(--xds-space-14);
+    }
+    .mrc-split { display: flex; gap: var(--xds-space-20); margin-bottom: var(--xds-space-8); }
+    .mrc-col-label { font-size: var(--xds-font-size-xs); color: var(--xds-text-secondary); margin-bottom: var(--xds-space-1); }
+    .mrc-col-sub   { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); }
+    .mrc-col-value { font-size: var(--xds-font-size-4xl); font-weight: var(--xds-font-weight-bold); color: var(--xds-text-primary); }
+    .reward-subtabs { display: flex; gap: var(--xds-space-4); margin-bottom: var(--xds-space-8); }
+    .reward-subtab {
+      padding: var(--xds-space-2) var(--xds-space-8);
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-medium);
+      border-radius: var(--xds-radius-sm);
+      border: 1px solid var(--xds-surface-border);
+      background: none; color: var(--xds-text-secondary);
+      cursor: pointer; transition: var(--xds-transition-fast);
+      font-family: var(--xds-font-family-base);
+    }
+    .reward-subtab.active { background: var(--xds-surface-hover); border-color: var(--xds-surface-border); color: var(--xds-text-primary); }
+    .reward-cards-row { display: flex; gap: var(--xds-space-6); }
+    .reward-mini-card {
+      flex: 1;
+      background: var(--xds-surface-overlay);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-lg);
+      padding: var(--xds-space-8) var(--xds-space-8);
+    }
+    .rmc-amount { font-size: var(--xds-font-size-lg); font-weight: var(--xds-font-weight-bold); color: var(--xds-color-brand-gold); margin-bottom: var(--xds-space-2); }
+    .rmc-type   { font-size: var(--xds-font-size-xs); font-weight: var(--xds-font-weight-bold); color: var(--xds-text-secondary); text-transform: uppercase; letter-spacing: var(--xds-letter-spacing-caps); margin-bottom: var(--xds-space-2); }
+    .rmc-expiry { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); }
+
+    /* Section heading */
+    .s-title { font-size: var(--xds-font-size-md); font-weight: var(--xds-font-weight-semibold); color: var(--xds-text-primary); margin-bottom: var(--xds-space-8); }
+
+    /* Campaign cards grid */
+    .campaigns-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--xds-space-6); }
+
+    .camp-card {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      overflow: hidden;
+      cursor: pointer;
+      transition: var(--xds-transition-base);
+    }
+    .camp-card:hover { border-color: rgba(255,255,255,0.16); transform: translateY(-2px); box-shadow: var(--xds-shadow-md); }
+
+    /* Fighter scene in card */
+    .camp-card-img {
+      height: 118px;
+      position: relative;
+      overflow: hidden;
+      background: #07070f;
+    }
+    .card-scene-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 28% 55%, rgba(10,22,80,0.95) 0%, transparent 65%),
+        radial-gradient(ellipse at 72% 38%, rgba(45,8,75,0.8) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(20,30,100,0.5) 0%, transparent 70%);
+    }
+    .card-fighters {
+      position: absolute; inset: 0;
+      display: flex; align-items: flex-end;
+      justify-content: center; gap: 4px;
+      padding-bottom: 6px;
+    }
+    /* Simplified fighter shapes */
+    .cf {
+      position: relative;
+      width: 32px; height: 72px;
+      opacity: 0.55;
+    }
+    .cf::before { /* head */
+      content: '';
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 11px; height: 12px;
+      border-radius: 50%;
+      background: rgba(200,215,255,0.7);
+    }
+    .cf::after { /* body */
+      content: '';
+      position: absolute; top: 11px; left: 50%;
+      transform: translateX(-50%);
+      width: 9px; height: 20px;
+      background: rgba(180,200,255,0.55);
+      border-radius: 3px;
+    }
+    .cf-arm-l {
+      position: absolute; top: 13px; left: 2px;
+      width: 18px; height: 5px;
+      background: rgba(180,200,255,0.5);
+      border-radius: 3px; transform-origin: right center;
+    }
+    .cf-arm-r {
+      position: absolute; top: 13px; right: 2px;
+      width: 18px; height: 5px;
+      background: rgba(180,200,255,0.5);
+      border-radius: 3px; transform-origin: left center;
+    }
+    .cf-leg-l {
+      position: absolute; bottom: 0; left: 6px;
+      width: 7px; height: 26px;
+      background: rgba(170,190,245,0.5);
+      border-radius: 3px; transform-origin: top center;
+    }
+    .cf-leg-r {
+      position: absolute; bottom: 0; right: 6px;
+      width: 7px; height: 26px;
+      background: rgba(170,190,245,0.5);
+      border-radius: 3px; transform-origin: top center;
+    }
+    .cf.attack .cf-arm-r { transform: rotate(-52deg); }
+    .cf.attack .cf-leg-r { transform: rotate(-20deg); }
+    .cf.attack .cf-arm-l { transform: rotate(28deg); }
+    .cf.defend .cf-arm-l { transform: rotate(-58deg); }
+    .cf.defend .cf-leg-l { transform: rotate(18deg); }
+    .cf.defend .cf-arm-r { transform: rotate(28deg); }
+    .cf-glow {
+      position: absolute; inset: -10px;
+      background: radial-gradient(circle, rgba(80,120,255,0.14) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .card-bottom-grad {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 40px;
+      background: linear-gradient(0deg, var(--xds-surface-elevated), transparent);
+    }
+    .card-motion {
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        44deg, transparent, transparent 10px,
+        rgba(80,110,255,0.025) 10px, rgba(80,110,255,0.025) 11px
+      );
+    }
+
+    .camp-card-body { padding: var(--xds-space-6) var(--xds-space-8) var(--xds-space-8); }
+    .camp-card-name { font-size: var(--xds-font-size-base); font-weight: var(--xds-font-weight-semibold); color: var(--xds-text-primary); margin-bottom: var(--xds-space-2); }
+    .camp-card-date { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); margin-bottom: var(--xds-space-6); }
+    .camp-card-footer { display: flex; justify-content: flex-end; }
+    .xds-btn-joined {
+      background: var(--xds-color-success-bg);
+      color: var(--xds-color-success);
+      border-color: var(--xds-color-success-border);
+      cursor: default;
+    }
+
+    /* Hub T&C */
+    .hub-tnc { margin-top: var(--xds-space-20); padding-top: var(--xds-space-12); border-top: 1px solid var(--xds-surface-border); }
+    .hub-tnc-title { font-size: var(--xds-font-size-base); font-weight: var(--xds-font-weight-semibold); color: var(--xds-text-secondary); margin-bottom: var(--xds-space-6); }
+    .hub-tnc-list { list-style: disc; padding-left: var(--xds-space-9); display: flex; flex-direction: column; gap: var(--xds-space-3); }
+    .hub-tnc-list li { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); line-height: var(--xds-line-height-relaxed); }
+    .hub-footer { text-align: center; padding: var(--xds-space-10); font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); border-top: 1px solid var(--xds-surface-border); margin-top: var(--xds-space-16); }
+    .hub-footer a { color: var(--xds-text-secondary); text-decoration: none; margin: 0 var(--xds-space-4); }
+
+    /* ══════════════════════════════════════════════
+       CAMPAIGN PAGE
+    ══════════════════════════════════════════════ */
+
+    /* Back bar */
+    .back-bar { background: var(--xds-surface-page); border-bottom: 1px solid var(--xds-surface-border); padding: 0 var(--xds-space-12); }
+    .back-bar-inner { max-width: 1160px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: var(--xds-space-3);
+      font-size: var(--xds-font-size-sm); color: var(--xds-text-secondary);
+      cursor: pointer; padding: var(--xds-space-4) 0;
+      border: none; background: none; font-family: var(--xds-font-family-base);
+      transition: var(--xds-transition-fast);
+    }
+    .back-link:hover { color: var(--xds-text-primary); }
+
+    /* Campaign hero */
+    .camp-hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      background: #06070d;
+    }
+    .camp-hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 14% 55%, rgba(6,16,72,0.98) 0%, transparent 52%),
+        radial-gradient(ellipse at 38% 42%, rgba(10,22,88,0.7) 0%, transparent 42%),
+        radial-gradient(ellipse at 70% 32%, rgba(38,6,72,0.7) 0%, transparent 52%),
+        linear-gradient(180deg, #07080e 0%, #06070d 100%);
+    }
+    /* Fighter scene right side */
+    .hero-scene {
+      position: absolute; right: 0; top: 0; bottom: 0;
+      width: 60%; overflow: hidden;
+    }
+    .hero-scene::after {
+      content: ''; position: absolute;
+      left: 0; top: 0; bottom: 0; width: 52%;
+      background: linear-gradient(90deg, #06070d 0%, transparent 100%);
+      z-index: 2;
+    }
+    .hero-energy {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse at 50% 65%, rgba(45,60,180,0.22) 0%, transparent 55%),
+        repeating-linear-gradient(
+          -43deg, transparent, transparent 14px,
+          rgba(80,110,255,0.03) 14px, rgba(80,110,255,0.03) 15px
+        );
+    }
+    .hero-fighters {
+      position: absolute; inset: 0; z-index: 1;
+      display: flex; align-items: flex-end;
+      justify-content: center; padding-bottom: 0;
+    }
+    /* Large hero fighter */
+    .hf {
+      position: relative;
+      width: 120px; height: 230px;
+      opacity: 0.72;
+      filter: blur(0.4px);
+    }
+    .hf-glow {
+      position: absolute; inset: -16px;
+      background: radial-gradient(ellipse, rgba(70,100,255,0.16) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hf::before { /* head */
+      content: ''; position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 34px; height: 37px; border-radius: 50%;
+      background: rgba(210,220,255,0.18);
+      box-shadow: 0 0 10px rgba(140,160,255,0.15);
+    }
+    .hf::after { /* body */
+      content: ''; position: absolute; top: 34px; left: 50%;
+      transform: translateX(-50%);
+      width: 27px; height: 64px;
+      background: rgba(190,205,255,0.14); border-radius: 6px;
+    }
+    .hf-al { position: absolute; top: 42px; left: 10px; width: 62px; height: 15px; background: rgba(190,205,255,0.13); border-radius: 7px; transform-origin: right center; }
+    .hf-ar { position: absolute; top: 42px; right: 10px; width: 62px; height: 15px; background: rgba(190,205,255,0.13); border-radius: 7px; transform-origin: left center; }
+    .hf-ll { position: absolute; bottom: 0; left: 22px; width: 22px; height: 96px; background: rgba(180,196,250,0.13); border-radius: 6px; transform-origin: top center; }
+    .hf-lr { position: absolute; bottom: 0; right: 22px; width: 22px; height: 96px; background: rgba(180,196,250,0.13); border-radius: 6px; transform-origin: top center; }
+    /* Attack/Defend poses */
+    .hf.hf-atk .hf-ar { transform: rotate(-58deg) translateX(-8px); }
+    .hf.hf-atk .hf-al { transform: rotate(32deg); }
+    .hf.hf-atk .hf-lr { transform: rotate(-24deg); }
+    .hf.hf-def .hf-al { transform: rotate(-62deg); }
+    .hf.hf-def .hf-ar { transform: rotate(28deg); }
+    .hf.hf-def .hf-ll { transform: rotate(18deg); }
+    .hero-smoke {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 70px; z-index: 2;
+      background: linear-gradient(0deg, #06070d 0%, transparent 100%);
+    }
+
+    .camp-hero-inner {
+      position: relative; z-index: 10;
+      max-width: 1160px; margin: 0 auto;
+      padding: var(--xds-space-28) var(--xds-space-12) var(--xds-space-24);
+      width: 100%;
+    }
+    .camp-badge {
+      display: inline-flex; align-items: center; gap: var(--xds-space-3);
+      background: var(--xds-color-info-bg);
+      border: 1px solid var(--xds-color-info-border);
+      border-radius: var(--xds-radius-sm);
+      padding: var(--xds-space-2) var(--xds-space-5);
+      font-size: var(--xds-font-size-xs);
+      font-weight: var(--xds-font-weight-bold);
+      color: var(--xds-color-brand-blue-light);
+      letter-spacing: var(--xds-letter-spacing-wider);
+      text-transform: uppercase;
+      margin-bottom: var(--xds-space-5);
+    }
+    .camp-badge-icon { font-size: 12px; }
+    .camp-hero-title {
+      font-size: var(--xds-font-size-6xl);
+      font-weight: var(--xds-font-weight-extrabold);
+      line-height: var(--xds-line-height-tight);
+      letter-spacing: var(--xds-letter-spacing-tight);
+      color: var(--xds-text-primary);
+      margin-bottom: var(--xds-space-3);
+    }
+    .camp-hero-tagline { font-size: var(--xds-font-size-base); color: rgba(255,255,255,0.52); margin-bottom: var(--xds-space-9); }
+    .camp-hero-tagline strong { color: rgba(255,255,255,0.88); font-weight: var(--xds-font-weight-medium); }
+    .camp-cd-label { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); text-transform: uppercase; letter-spacing: var(--xds-letter-spacing-wider); margin-bottom: var(--xds-space-3); }
+    .camp-countdown { display: flex; align-items: center; gap: var(--xds-space-3); margin-bottom: var(--xds-space-12); }
+    .cd-box { text-align: center; }
+    .cd-num {
+      display: block;
+      font-size: var(--xds-font-size-4xl);
+      font-weight: var(--xds-font-weight-bold);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-sm);
+      padding: var(--xds-space-4) var(--xds-space-5);
+      min-width: 56px; text-align: center;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+    .cd-lbl { display: block; font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); text-transform: uppercase; letter-spacing: var(--xds-letter-spacing-wider); margin-top: var(--xds-space-3); }
+    .cd-sep { font-size: var(--xds-font-size-4xl); font-weight: var(--xds-font-weight-bold); color: var(--xds-text-tertiary); padding-bottom: 16px; }
+
+    /* Campaign tabs bar */
+    .camp-tabs-bar {
+      border-bottom: 1px solid var(--xds-surface-border);
+      background: var(--xds-surface-page);
+      position: sticky; top: var(--xds-nav-height);
+      z-index: var(--xds-z-raised);
+    }
+    .camp-tabs-inner { max-width: 1160px; margin: 0 auto; padding: 0 var(--xds-space-12); display: flex; }
+
+    /* Camp body */
+    .camp-body { max-width: 1160px; margin: 0 auto; padding: var(--xds-space-14) var(--xds-space-12) var(--xds-space-20); }
+    .camp-section { display: none; }
+    .camp-section.active { display: block; }
+
+    /* Dashboard card */
+    .dashboard-card {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      padding: var(--xds-space-9) var(--xds-space-12);
+      display: flex; align-items: center;
+      margin-bottom: var(--xds-space-16);
+    }
+    .dw-cell { flex: 1; padding: 0 var(--xds-space-12); border-right: 1px solid var(--xds-surface-border); }
+    .dw-cell:first-child { padding-left: 0; }
+    .dw-cell:last-child { border-right: none; padding-right: 0; }
+    .dw-user-wrap { display: flex; align-items: center; gap: var(--xds-space-6); }
+    .dw-avatar {
+      width: 36px; height: 36px; border-radius: var(--xds-radius-full);
+      background: var(--xds-surface-overlay); border: 1px solid var(--xds-surface-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: var(--xds-text-secondary); flex-shrink: 0;
+    }
+    .dw-label { font-size: var(--xds-font-size-xs); color: var(--xds-text-secondary); margin-bottom: var(--xds-space-1); }
+    .dw-value { font-size: var(--xds-font-size-base); font-weight: var(--xds-font-weight-semibold); color: var(--xds-text-primary); }
+    .dw-value.lg { font-size: var(--xds-font-size-2xl); font-weight: var(--xds-font-weight-bold); }
+    .dw-out { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); font-weight: var(--xds-font-weight-regular); margin-left: 2px; }
+    .dw-actions { display: flex; align-items: center; justify-content: flex-end; }
+
+    /* Section header */
+    .s-heading { font-size: var(--xds-font-size-xl); font-weight: var(--xds-font-weight-bold); color: var(--xds-text-primary); margin-bottom: var(--xds-space-4); }
+    .s-desc { font-size: var(--xds-font-size-sm); color: var(--xds-text-secondary); line-height: var(--xds-line-height-relaxed); margin-bottom: var(--xds-space-12); max-width: 680px; }
+
+    /* Prize grid */
+    .prize-row-1 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--xds-space-6); margin-bottom: var(--xds-space-6); }
+    .prize-row-2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--xds-space-6); margin-bottom: var(--xds-space-20); }
+    .prize-card {
+      background: var(--xds-surface-elevated);
+      border: 1px solid var(--xds-surface-border);
+      border-radius: var(--xds-radius-xl);
+      padding: var(--xds-space-9) var(--xds-space-8) var(--xds-space-8);
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .prize-card.p1 {
+      border-color: var(--xds-color-info-border);
+      background: linear-gradient(155deg, rgba(28,110,242,0.08) 0%, var(--xds-surface-elevated) 65%);
+    }
+    .prize-card.p1::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--xds-color-brand-blue), rgba(28,110,242,0.25));
+    }
+    .prize-rank-badge {
+      display: inline-block;
+      font-size: var(--xds-font-size-xs); font-weight: var(--xds-font-weight-bold);
+      text-transform: uppercase; letter-spacing: var(--xds-letter-spacing-caps);
+      padding: 2px var(--xds-space-4); border-radius: var(--xds-radius-xs);
+      margin-bottom: var(--xds-space-6);
+    }
+    .rank-1  { background: rgba(240,185,11,0.14);  color: var(--xds-color-brand-gold); }
+    .rank-2  { background: rgba(176,176,200,0.12); color: var(--xds-text-secondary); }
+    .rank-3  { background: rgba(200,130,60,0.14);  color: #c8863c; }
+    .rank-oth{ background: rgba(255,255,255,0.05); color: var(--xds-text-tertiary); }
+
+    /* CSS coin */
+    .prize-coin {
+      width: 58px; height: 58px; border-radius: var(--xds-radius-full);
+      margin: 0 auto var(--xds-space-6);
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .prize-coin::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.16); }
+    .coin-1 { background: radial-gradient(circle at 36% 30%, #f2d050, #c08a0c, #7a5200); box-shadow: 0 0 16px rgba(240,185,11,0.45), var(--xds-shadow-md); }
+    .coin-2 { background: radial-gradient(circle at 36% 30%, #dce8f2, #9ab0c6, #5a6876); box-shadow: 0 0 12px rgba(176,176,200,0.3), var(--xds-shadow-md); }
+    .coin-3 { background: radial-gradient(circle at 36% 30%, #dda060, #b87028, #6a3808); box-shadow: 0 0 12px rgba(200,130,60,0.3), var(--xds-shadow-md); }
+    .coin-oth{ background: radial-gradient(circle at 36% 30%, #6888a0, #486276, #283848); box-shadow: var(--xds-shadow-sm); }
+    .coin-icon { font-size: 19px; filter: brightness(1.3) contrast(0.9); z-index: 1; }
+    .prize-card-sm .prize-coin { width: 44px; height: 44px; }
+    .prize-card-sm .coin-icon  { font-size: 15px; }
+    .prize-amount { font-size: var(--xds-font-size-xl); font-weight: var(--xds-font-weight-bold); margin-bottom: var(--xds-space-2); }
+    .prize-amount.a1 { color: var(--xds-color-brand-blue); font-size: var(--xds-font-size-2xl); }
+    .prize-amount.a2 { color: var(--xds-text-secondary); }
+    .prize-amount.a3 { color: #c8863c; }
+    .prize-amount.aoth { color: var(--xds-text-primary); font-size: var(--xds-font-size-lg); }
+    .prize-unit { font-size: var(--xds-font-size-sm); color: var(--xds-text-secondary); margin-bottom: var(--xds-space-4); }
+    .prize-desc { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); line-height: var(--xds-line-height-relaxed); }
+
+    /* Leaderboard */
+    .lb-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--xds-space-6); }
+    .lb-updated { font-size: var(--xds-font-size-xs); color: var(--xds-text-tertiary); }
+    .lb-user-cell { display: flex; align-items: center; gap: var(--xds-space-5); }
+    .lb-avatar { width: 24px; height: 24px; border-radius: var(--xds-radius-full); background: var(--xds-surface-overlay); border: 1px solid var(--xds-surface-border); display: flex; align-items: center; justify-content: center; font-size: var(--xds-font-size-xs); color: var(--xds-text-secondary); flex-shrink: 0; }
+    .lb-you { font-size: 10px; background: var(--xds-color-info-bg); color: var(--xds-color-brand-blue-light); padding: 1px 6px; border-radius: var(--xds-radius-xs); margin-left: var(--xds-space-3); }
+    .lb-trophy { font-size: 16px; }
+    .lb-era  { color: var(--xds-color-brand-gold); font-weight: var(--xds-font-weight-semibold); font-size: var(--xds-font-size-sm); }
+    .lb-era.dim { color: var(--xds-text-tertiary); }
+    .lb-vol  { text-align: right; font-variant-numeric: tabular-nums; font-weight: var(--xds-font-weight-semibold); }
+    .lb-rank { font-weight: var(--xds-font-weight-semibold); color: var(--xds-text-secondary); }
+    .xds-table tbody tr.my-row { background: var(--xds-surface-selected); }
+    .xds-table tbody tr.my-row:hover { background: rgba(28,110,242,0.18); }
+    .lb-sep td { padding: 4px; background: var(--xds-surface-page); text-align: center; color: var(--xds-text-tertiary); font-size: var(--xds-font-size-xs); letter-spacing: var(--xds-letter-spacing-wider); border-bottom: 1px solid var(--xds-surface-border); }
+
+    /* How to Participate */
+    .hitp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--xds-space-8); margin-bottom: var(--xds-space-20); }
+    .hitp-card { background: var(--xds-surface-elevated); border: 1px solid var(--xds-surface-border); border-radius: var(--xds-radius-xl); padding: var(--xds-space-12) var(--xds-space-9); text-align: center; }
+    .hitp-icon { width: 44px; height: 44px; border-radius: var(--xds-radius-full); background: var(--xds-color-info-bg); border: 1px solid var(--xds-color-info-border); display: flex; align-items: center; justify-content: center; margin: 0 auto var(--xds-space-8); font-size: 19px; }
+    .hitp-text { font-size: var(--xds-font-size-sm); color: var(--xds-text-secondary); line-height: var(--xds-line-height-relaxed); }
+
+    /* FAQ */
+    .faq-list { display: flex; flex-direction: column; gap: var(--xds-space-2); margin-bottom: var(--xds-space-20); }
+    .faq-item { background: var(--xds-surface-elevated); border: 1px solid var(--xds-surface-border); border-radius: var(--xds-radius-lg); overflow: hidden; }
+    .faq-q {
+      width: 100%; background: none; border: none;
+      padding: var(--xds-space-8) var(--xds-space-9);
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; text-align: left;
+      color: var(--xds-text-primary); font-family: var(--xds-font-family-base);
+      font-size: var(--xds-font-size-base); font-weight: var(--xds-font-weight-medium); gap: var(--xds-space-8);
+      transition: var(--xds-transition-fast);
+    }
+    .faq-q:hover { background: var(--xds-surface-hover); }
+    .faq-num { color: var(--xds-text-tertiary); margin-right: var(--xds-space-2); }
+    .faq-chev { width: 16px; height: 16px; flex-shrink: 0; color: var(--xds-text-tertiary); transition: transform 0.18s; }
+    .faq-item.open .faq-chev { transform: rotate(180deg); }
+    .faq-a { display: none; padding: 0 var(--xds-space-9) var(--xds-space-8); font-size: var(--xds-font-size-sm); color: var(--xds-text-secondary); line-height: var(--xds-line-height-relaxed); }
+    .faq-item.open .faq-a { display: block; }
+
+    /* Rules */
+    .rules-list { list-style: disc; padding-left: var(--xds-space-9); display: flex; flex-direction: column; gap: var(--xds-space-4); margin-bottom: var(--xds-space-20); }
+    .rules-list li { font-size: var(--xds-font-size-sm); color: var(--xds-text-secondary); line-height: var(--xds-line-height-relaxed); }
+    .rules-list a { color: var(--xds-text-link); text-decoration: none; }
+    .rules-list a:hover { text-decoration: underline; }
+
+    /* section gap when shown inline in Dashboard */
+    .inline-gap { margin-top: var(--xds-space-20); }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     SHARED NAV
+════════════════════════════════════════════════════════════ -->
+<nav class="xds-nav">
+  <a class="nav-brand" onclick="goHub()">
+    <div class="xds-nav-brand-icon">⬡</div>
+    <span style="font-size:12px;font-weight:800;letter-spacing:.08em;">EXCHANGE</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link">Markets</button>
+    <button class="nav-link">Bots <span class="nav-caret">▼</span></button>
+    <button class="nav-link">Yield <span class="nav-caret">▼</span></button>
+    <button class="nav-link">Institutions &amp; Partners <span class="nav-caret">▼</span></button>
+    <button class="nav-link">Tiers &amp; Benefits</button>
+    <button class="nav-link">More <span class="nav-caret">▼</span></button>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon-btn">🔔</button>
+    <span id="nav-loggedout">
+      <button class="xds-btn xds-btn-ghost xds-btn-sm" style="margin-right:4px;">Log In</button>
+      <button class="xds-btn xds-btn-secondary xds-btn-sm">Sign Up</button>
+    </span>
+    <span id="nav-loggedin" style="display:none;align-items:center;gap:6px;">
+      <div class="nav-avatar">👤</div>
+      <button class="xds-btn xds-btn-primary xds-btn-sm">Trade</button>
+    </span>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 1 — REWARDS HUB
+════════════════════════════════════════════════════════════ -->
+<div id="page-hub" class="page active">
+
+  <!-- Hero Banner -->
+  <div class="hub-hero">
+    <div class="hub-hero-bg"></div>
+    <div class="hub-hero-inner">
+      <div class="hub-hero-text">
+        <h1 class="hub-hero-title">Rewards Hub</h1>
+        <p class="hub-hero-sub"><strong>$100</strong> Rewards Awaits</p>
+      </div>
+      <div class="hub-trophy">
+        <div class="trophy-hl"></div>
+        <div class="trophy-hr"></div>
+        <div class="trophy-cup"></div>
+        <div class="trophy-stem"></div>
+        <div class="trophy-base"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hub Tabs -->
+  <div class="hub-tabs-bar">
+    <div class="hub-tabs-inner">
+      <div class="xds-tabs" style="border:none;">
+        <div class="xds-tab active" onclick="switchHubTab('my-rewards',this)">My Rewards</div>
+        <div class="xds-tab" onclick="switchHubTab('sign-on',this)">Sign-on Rewards</div>
+        <div class="xds-tab" onclick="switchHubTab('trading-comps',this)">Trading competitions</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hub Body -->
+  <div class="hub-body">
+
+    <!-- MY REWARDS tab -->
+    <div id="hub-my-rewards" class="hub-tab-pane active">
+      <div class="my-rewards-card">
+        <div style="font-size:var(--xds-font-size-base);font-weight:var(--xds-font-weight-semibold);color:var(--xds-text-primary);margin-bottom:var(--xds-space-6);">My Rewards</div>
+        <div class="mrc-split">
+          <div>
+            <div class="mrc-col-label">Trading fee credits</div>
+            <div class="mrc-col-value">$0</div>
+          </div>
+          <div>
+            <div class="mrc-col-label">Other rewards</div>
+            <div class="mrc-col-value">$888</div>
+          </div>
+        </div>
+        <div class="reward-subtabs">
+          <button class="reward-subtab" onclick="switchSubTab(this)">Trading Fee Credits</button>
+          <button class="reward-subtab active" onclick="switchSubTab(this)">Other rewards</button>
+        </div>
+        <div class="reward-cards-row">
+          <div class="reward-mini-card">
+            <div class="rmc-amount">888 USDC</div>
+            <div class="rmc-type">Trading Competition</div>
+            <div class="rmc-expiry">Valid for 51 days</div>
+          </div>
+          <div class="reward-mini-card">
+            <div class="rmc-amount" style="color:var(--xds-text-secondary)">10 USDC</div>
+            <div class="rmc-type">Trading Competition</div>
+            <div class="rmc-expiry">Valid for 51 days</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trading Competitions -->
+      <div class="s-title">Trading Competitions</div>
+      <div class="campaigns-grid">
+        <!-- Card 1: Join Now -->
+        <div class="camp-card" onclick="goCampaign()">
+          <div class="camp-card-img">
+            <div class="card-scene-bg"></div><div class="card-motion"></div>
+            <div class="card-fighters">
+              <div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div>
+              <div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div>
+            </div>
+            <div class="card-bottom-grad"></div>
+          </div>
+          <div class="camp-card-body">
+            <div class="camp-card-name">APEX of Trade</div>
+            <div class="camp-card-date">Ends in 2026-06-30</div>
+            <div class="camp-card-footer">
+              <button class="xds-btn xds-btn-primary xds-btn-sm" onclick="event.stopPropagation();goCampaign()">Join Now</button>
+            </div>
+          </div>
+        </div>
+        <!-- Cards 2–5: Joined -->
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+      </div>
+
+      <div class="hub-tnc">
+        <div class="hub-tnc-title">Terms &amp; Conditions</div>
+        <ul class="hub-tnc-list">
+          <li>All tasks and rewards are limited and will be issued based on a first-come, first-served basis.</li>
+          <li>Tasks available in the Rewards Hub may vary between users based on factors including, but not limited to: user activity, preferences, random allocation and regional availability.</li>
+          <li>Users have to complete Identity Verification (i.e. 1+) in order to receive the rewards, if any.</li>
+          <li>Multi-account registration to farm rewards or any other abusive or fraudulent behaviours will result in immediate termination of all associated accounts.</li>
+          <li>Please refer to the Latest Promotions, Bonus and Coupons FAQ for more information. Exchange reserves the right of final interpretation of all terms and conditions.</li>
+          <li>Trading Vouchers (for Spot) are currently not supported on the Unified Trading Account. By upgrading to a Unified Trading Account, you will forfeit all existing trading vouchers that you hold, and no longer be able to claim any new trading vouchers until further notice.</li>
+          <li>For local laws and regulations, users from regions where Derivatives trading is prohibited (e.g., Brazil, Netherlands, Hong Kong) may not be eligible for rewards associated with Derivatives trades. We will offer region-specific events and rewards instead. Stay tuned for our latest announcements.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SIGN-ON tab -->
+    <div id="hub-sign-on" class="hub-tab-pane">
+      <p class="xds-text-secondary" style="padding:var(--xds-space-16) 0;">No sign-on rewards available at this time.</p>
+    </div>
+
+    <!-- TRADING COMPETITIONS tab -->
+    <div id="hub-trading-comps" class="hub-tab-pane">
+      <div class="s-title">Trading Competitions</div>
+      <div class="campaigns-grid">
+        <div class="camp-card" onclick="goCampaign()"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-primary xds-btn-sm" onclick="event.stopPropagation();goCampaign()">Join Now</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+        <div class="camp-card"><div class="camp-card-img"><div class="card-scene-bg"></div><div class="card-motion"></div><div class="card-fighters"><div class="cf attack"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div><div class="cf defend"><div class="cf-glow"></div><div class="cf-arm-l"></div><div class="cf-arm-r"></div><div class="cf-leg-l"></div><div class="cf-leg-r"></div></div></div><div class="card-bottom-grad"></div></div><div class="camp-card-body"><div class="camp-card-name">APEX of Trade</div><div class="camp-card-date">Ends in 2026-06-30</div><div class="camp-card-footer"><button class="xds-btn xds-btn-sm xds-btn-joined">✓ Joined</button></div></div></div>
+      </div>
+    </div>
+
+  </div><!-- /hub-body -->
+  <div class="hub-footer">
+    © 2016–2026 Exchange Ltd. All rights reserved.
+    <a href="#">Privacy Policy</a>
+    <a href="#">Status</a>
+    <a href="#">Cookie Preferences</a>
+  </div>
+</div><!-- /page-hub -->
+
+
+<!-- ════════════════════════════════════════════════════════════
+     PAGE 2 — CAMPAIGN DETAIL
+════════════════════════════════════════════════════════════ -->
+<div id="page-campaign" class="page">
+
+  <!-- Breadcrumb -->
+  <div class="back-bar">
+    <div class="back-bar-inner">
+      <button class="back-link" onclick="goHub()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 10.5L4.5 7 8 3.5"/></svg>
+        Rewards Hub home
+      </button>
+    </div>
+  </div>
+
+  <!-- Campaign Hero -->
+  <div class="camp-hero">
+    <div class="camp-hero-bg"></div>
+    <div class="hero-scene">
+      <div class="hero-energy"></div>
+      <div class="hero-fighters">
+        <div class="hf hf-atk" style="margin-right:-18px;">
+          <div class="hf-glow"></div>
+          <div class="hf-al"></div><div class="hf-ar"></div>
+          <div class="hf-ll"></div><div class="hf-lr"></div>
+        </div>
+        <div class="hf hf-def" style="margin-left:-18px;">
+          <div class="hf-glow"></div>
+          <div class="hf-al"></div><div class="hf-ar"></div>
+          <div class="hf-ll"></div><div class="hf-lr"></div>
+        </div>
+      </div>
+      <div class="hero-smoke"></div>
+    </div>
+    <div class="camp-hero-inner">
+      <div class="camp-badge"><span class="camp-badge-icon">🏆</span> Winner Takes All Competition</div>
+      <h1 class="camp-hero-title">Winner Takes All</h1>
+      <p class="camp-hero-tagline"><strong>$6,000</strong> Spoils to the Victor</p>
+      <p class="camp-cd-label">Ends in</p>
+      <div class="camp-countdown">
+        <div class="cd-box"><span class="cd-num" id="cd-d">25</span><span class="cd-lbl">Days</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-box"><span class="cd-num" id="cd-h">01</span><span class="cd-lbl">Hours</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-box"><span class="cd-num" id="cd-m">59</span><span class="cd-lbl">Mins</span></div>
+        <span class="cd-sep">:</span>
+        <div class="cd-box"><span class="cd-num" id="cd-s">30</span><span class="cd-lbl">Secs</span></div>
+      </div>
+      <button class="xds-btn xds-btn-primary xds-btn-lg" id="join-btn" onclick="joinCampaign()">Join Now</button>
+    </div>
+  </div>
+
+  <!-- Campaign Tabs -->
+  <div class="camp-tabs-bar">
+    <div class="camp-tabs-inner" id="camp-tabs-inner"></div>
+  </div>
+
+  <!-- Campaign Sections -->
+  <div class="camp-body">
+
+    <!-- DASHBOARD (logged-in only) -->
+    <div id="section-dashboard" class="camp-section">
+      <div class="dashboard-card">
+        <div class="dw-cell">
+          <div class="dw-user-wrap">
+            <div class="dw-avatar">👤</div>
+            <div>
+              <div class="dw-label">Display Name</div>
+              <div class="dw-value">ProTrader31821</div>
+            </div>
+          </div>
+        </div>
+        <div class="dw-cell">
+          <div class="dw-label">My Trading Volume</div>
+          <div class="dw-value lg">$1,052.03</div>
+        </div>
+        <div class="dw-cell">
+          <div class="dw-label">My Rank</div>
+          <div class="dw-value lg">248<span class="dw-out">[out]</span></div>
+        </div>
+        <div class="dw-cell dw-actions">
+          <button class="xds-btn xds-btn-primary">Trade More</button>
+        </div>
+      </div>
+      <!-- Inline full content for dashboard view -->
+      <div id="dashboard-inline"></div>
+    </div>
+
+    <!-- REWARDS -->
+    <div id="section-rewards" class="camp-section">
+      <div id="rewards-content">
+        <div class="s-heading">Rewards</div>
+        <p class="s-desc">The trader with the highest total volume when the campaign ends claims 100% of the prize pool. Every trade counts from Day 1.</p>
+        <div class="prize-row-1">
+          <div class="prize-card p1">
+            <div class="prize-rank-badge rank-1">1st</div>
+            <div class="prize-coin coin-1"><span class="coin-icon">🦅</span></div>
+            <div class="prize-amount a1">88,888 USDC</div>
+            <div class="prize-unit">1st Place Prize</div>
+            <div class="prize-desc">Highest cumulative volume when the campaign ends claims 100% of the prize pool.</div>
+          </div>
+          <div class="prize-card">
+            <div class="prize-rank-badge rank-2">2nd</div>
+            <div class="prize-coin coin-2"><span class="coin-icon">🦅</span></div>
+            <div class="prize-amount a2">5,500 USDC</div>
+            <div class="prize-unit">2nd Place Prize</div>
+            <div class="prize-desc">Prize of 5,500 USDC awarded to the 2nd ranked trader by cumulative volume.</div>
+          </div>
+          <div class="prize-card">
+            <div class="prize-rank-badge rank-3">3rd</div>
+            <div class="prize-coin coin-3"><span class="coin-icon">🦅</span></div>
+            <div class="prize-amount a3">4,000 USDC</div>
+            <div class="prize-unit">3rd Place Prize</div>
+            <div class="prize-desc">Prize of 4,000 USDC awarded to the 3rd ranked trader by cumulative volume.</div>
+          </div>
+        </div>
+        <div class="prize-row-2">
+          <div class="prize-card prize-card-sm">
+            <div class="prize-rank-badge rank-oth">4th</div>
+            <div class="prize-coin coin-oth"><span class="coin-icon">🦅</span></div>
+            <div class="prize-amount aoth">3,500 USDC</div>
+            <div class="prize-unit">4th Place Prize</div>
+          </div>
+          <div class="prize-card prize-card-sm">
+            <div class="prize-rank-badge rank-oth">5th</div>
+            <div class="prize-coin coin-oth"><span class="coin-icon">🦅</span></div>
+            <div class="prize-amount aoth">2,500 USDC</div>
+            <div class="prize-unit">5th Place Prize</div>
+          </div>
+          <div class="prize-card prize-card-sm">
+            <div class="prize-rank-badge rank-oth">6th – 10th</div>
+            <div class="prize-coin coin-oth"><span class="coin-icon">🦅</span></div>
+            <div class="prize-amount aoth">500 USDC Each</div>
+            <div class="prize-unit">Per Finalist</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEADERBOARD -->
+    <div id="section-leaderboard" class="camp-section">
+      <div id="lb-content">
+        <div class="lb-hdr">
+          <div class="s-heading" style="margin:0;">Leaderboard</div>
+          <div class="lb-updated">Updated: 10:53:38</div>
+        </div>
+        <div class="xds-table-wrap" style="margin-bottom:var(--xds-space-20);">
+          <table class="xds-table">
+            <thead>
+              <tr>
+                <th style="width:52px;"></th>
+                <th></th>
+                <th>Era Rewards</th>
+                <th style="text-align:right;">Total Volume</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW TO PARTICIPATE -->
+    <div id="section-hitp" class="camp-section">
+      <div id="hitp-content">
+        <div class="s-heading">How to Participate</div>
+        <div class="hitp-grid">
+          <div class="hitp-card">
+            <div class="hitp-icon">📊</div>
+            <p class="hitp-text">Trade any pair on our platform — every dollar of volume counts toward your score.</p>
+          </div>
+          <div class="hitp-card">
+            <div class="hitp-icon">🏅</div>
+            <p class="hitp-text">Your cumulative total volume is tracked live on the leaderboard. Race to the top.</p>
+          </div>
+          <div class="hitp-card">
+            <div class="hitp-icon">🏆</div>
+            <p class="hitp-text">The leader ranked #1 at 2026-05-31 wins 100% of the prize pool.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQs -->
+    <div id="section-faqs" class="camp-section">
+      <div id="faqs-content">
+        <div class="s-heading">FAQs</div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFAQ(this)">
+              <span><span class="faq-num">1.</span> What counts as trading volume?</span>
+              <svg class="faq-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
+            </button>
+            <div class="faq-a">All executed trades on eligible pairs count toward your score. Volume is measured as the trade's notional value in USD. Both buy and sell orders count. Pending or open orders do not count until executed.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFAQ(this)">
+              <span><span class="faq-num">2.</span> What if two leaders tie?</span>
+              <svg class="faq-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
+            </button>
+            <div class="faq-a">In the event of a tie, the trader who reached that volume first — as determined by last-trade timestamp — will be ranked higher. This tie-break is applied server-side before rankings are published.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFAQ(this)">
+              <span><span class="faq-num">3.</span> Is there a minimum to participate?</span>
+              <svg class="faq-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
+            </button>
+            <div class="faq-a">No minimum — any trade on an eligible pair counts toward your score. Start trading immediately and every dollar adds to your cumulative total from Day 1 of the campaign.</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-q" onclick="toggleFAQ(this)">
+              <span><span class="faq-num">4.</span> When are prizes distributed?</span>
+              <svg class="faq-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6l4.5 4.5L12.5 6"/></svg>
+            </button>
+            <div class="faq-a">Prizes are credited to winners' accounts within 7 business days after the campaign ends on 31 May 2026 at 23:59 UTC.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULES -->
+    <div id="section-rules" class="camp-section">
+      <div id="rules-content">
+        <div class="s-heading">Rules</div>
+        <ul class="rules-list">
+          <li>Campaign Period: 28 February 2026, 07:00 UTC – 31 March 2026, 08:00 UTC.</li>
+          <li>The "Take Three Trading Competition" (the "Campaign") is offered by Crypto.com to Exchange users. Not available in all jurisdictions.</li>
+          <li>Participation in the Campaign is strictly optional.</li>
+          <li>Please refer to the <a href="#">Official Rules for Exchange Limited Offer</a> for further rules regarding eligibility. Users residing in the United States should refer to the <a href="#">United States Specific Official Rules for Exchange Limited Offer</a>.</li>
+          <li>Participants must have successfully completed KYC verification, and all other onboarding procedures specified in the Crypto.com Exchange, and comply with all Campaign rules set by Crypto.com to be eligible.</li>
+          <li>Crypto.com will disqualify any entry from participants who do not meet the eligibility requirements as solely and absolutely determined by Crypto.com.</li>
+          <li>Crypto.com reserves the right to cancel, suspend, or postpone the Campaign or amend the Campaign rules at any time, without prior notice.</li>
+          <li>The rewards will be deposited in USDC into each Selected Entrant's account on the Crypto.com Exchange within 21 days after the Campaign Period ends.</li>
+          <li>All Selected Entrants will receive a confirmation email within 11 days after the Campaign Period ends.</li>
+          <li>The determination of Selected Entrants shall be subject to Crypto.com's sole and final discretion.</li>
+          <li>Leaderboard rankings do not render, guarantee, represent or imply eligibility or entitlement for any competitions, giveaways, offers or other campaigns.</li>
+          <li>In the event of any dispute, Crypto.com reserves the right to make a final decision regarding the Campaign.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /camp-body -->
+</div><!-- /page-campaign -->
+
+
+<script>
+  /* ──────────────────────────────────────────────
+     STATE
+  ────────────────────────────────────────────── */
+  let isLoggedIn = false;
+
+  /* ──────────────────────────────────────────────
+     PAGE NAV
+  ────────────────────────────────────────────── */
+  function goHub() {
+    document.getElementById('page-hub').classList.add('active');
+    document.getElementById('page-campaign').classList.remove('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function goCampaign() {
+    document.getElementById('page-hub').classList.remove('active');
+    document.getElementById('page-campaign').classList.add('active');
+    isLoggedIn = false;
+    applyState();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ──────────────────────────────────────────────
+     JOIN
+  ────────────────────────────────────────────── */
+  function joinCampaign() {
+    isLoggedIn = true;
+    const btn = document.getElementById('join-btn');
+    btn.textContent = '✓ Joined';
+    btn.classList.remove('xds-btn-primary');
+    btn.classList.add('xds-btn-joined');
+    btn.onclick = null;
+    applyState();
+  }
+
+  /* ──────────────────────────────────────────────
+     APPLY LOGIN STATE
+  ────────────────────────────────────────────── */
+  function applyState() {
+    document.getElementById('nav-loggedout').style.display  = isLoggedIn ? 'none' : '';
+    const li = document.getElementById('nav-loggedin');
+    li.style.display = isLoggedIn ? 'inline-flex' : 'none';
+    renderTabs();
+    renderLeaderboard();
+    if (isLoggedIn) buildDashboardInline();
+  }
+
+  /* ──────────────────────────────────────────────
+     TABS
+  ────────────────────────────────────────────── */
+  const TABS_OUT = [
+    { key:'rewards',     label:'Rewards' },
+    { key:'hitp',        label:'How to Participate' },
+    { key:'leaderboard', label:'Leaderboard' },
+    { key:'faqs',        label:'FAQs' },
+    { key:'rules',       label:'Rules' },
+  ];
+  const TABS_IN = [
+    { key:'dashboard',   label:'Dashboard' },
+    { key:'leaderboard', label:'Leaderboard' },
+    { key:'rewards',     label:'Rewards' },
+    { key:'hitp',        label:'How to Participate' },
+    { key:'faqs',        label:'FAQs' },
+    { key:'rules',       label:'Rules' },
+  ];
+
+  function renderTabs() {
+    const tabs = isLoggedIn ? TABS_IN : TABS_OUT;
+    const c = document.getElementById('camp-tabs-inner');
+    c.innerHTML = '';
+    tabs.forEach((t, i) => {
+      const el = document.createElement('div');
+      el.className = 'xds-tab' + (i === 0 ? ' active' : '');
+      el.textContent = t.label;
+      el.onclick = () => {
+        c.querySelectorAll('.xds-tab').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        showSection(t.key);
+      };
+      c.appendChild(el);
+    });
+    showSection(tabs[0].key);
+  }
+
+  function showSection(key) {
+    document.querySelectorAll('.camp-section').forEach(s => s.classList.remove('active'));
+    const s = document.getElementById('section-' + key);
+    if (s) s.classList.add('active');
+  }
+
+  /* ──────────────────────────────────────────────
+     DASHBOARD INLINE (shows all sections)
+  ────────────────────────────────────────────── */
+  function buildDashboardInline() {
+    const dest = document.getElementById('dashboard-inline');
+    dest.innerHTML = '';
+    ['rewards-content','lb-content','hitp-content','faqs-content','rules-content'].forEach(id => {
+      const src = document.getElementById(id);
+      if (!src) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'inline-gap';
+      wrap.innerHTML = src.innerHTML;
+      // Re-wire FAQ toggles inside cloned content
+      wrap.querySelectorAll('.faq-q').forEach(btn => { btn.onclick = () => toggleFAQ(btn); });
+      dest.appendChild(wrap);
+    });
+    // Re-render leaderboard inside inline lb (it has its own tbody id, update it)
+    const cloneTbody = dest.querySelector('#lb-tbody');
+    if (cloneTbody) cloneTbody.removeAttribute('id');
+    renderLeaderboard(dest.querySelector('tbody'));
+  }
+
+  /* ──────────────────────────────────────────────
+     LEADERBOARD
+  ────────────────────────────────────────────── */
+  const LB_ROWS = [
+    { rank:1,  trophy:'🥇', name:'UserName123', era:'$888 USDC',  vol:'$44,212,063.02' },
+    { rank:2,  trophy:'🥈', name:'UserName123', era:'–',           vol:'$1,212,063.02'  },
+    { rank:3,  trophy:'🥉', name:'UserName123', era:'–',           vol:'$1,212,963.02'  },
+    { rank:4,  trophy:null, name:'UserName123', era:'–',           vol:'$1,212,863.02'  },
+    { rank:5,  trophy:null, name:'UserName123', era:'–',           vol:'$1,212,863.02'  },
+    { rank:6,  trophy:null, name:'UserName123', era:'–',           vol:'$1,212,963.02'  },
+    { rank:7,  trophy:null, name:'UserName123', era:'–',           vol:'$1,212,963.02'  },
+  ];
+
+  function renderLeaderboard(tbodyEl) {
+    const tbody = tbodyEl || document.getElementById('lb-tbody');
+    if (!tbody) return;
+    let h = '';
+    LB_ROWS.forEach(r => {
+      const rankCell = r.trophy
+        ? `<div class="lb-trophy">${r.trophy}</div>`
+        : `<span class="lb-rank">${r.rank}</span>`;
+      h += `<tr>
+        <td>${rankCell}</td>
+        <td><div class="lb-user-cell"><div class="lb-avatar">${r.name[0]}</div><span>${r.name}</span></div></td>
+        <td class="lb-era${r.era==='–'?' dim':''}">${r.era}</td>
+        <td class="lb-vol">${r.vol}</td>
+      </tr>`;
+    });
+    if (isLoggedIn) {
+      h += `<tr class="lb-sep"><td colspan="4">· · ·</td></tr>`;
+      h += `<tr class="my-row">
+        <td><span class="lb-rank">248</span></td>
+        <td><div class="lb-user-cell"><div class="lb-avatar">P</div><span>ProTrader31821</span><span class="lb-you">You</span></div></td>
+        <td class="lb-era dim">–</td>
+        <td class="lb-vol">$1,363.02</td>
+      </tr>`;
+    }
+    tbody.innerHTML = h;
+  }
+
+  /* ──────────────────────────────────────────────
+     COUNTDOWN
+  ────────────────────────────────────────────── */
+  const END_DATE = new Date(Date.now() + 25*86400000 + 1*3600000 + 59*60000 + 30000);
+  function tick() {
+    let d = Math.max(0, END_DATE - Date.now());
+    const days = Math.floor(d / 86400000); d -= days*86400000;
+    const hrs  = Math.floor(d / 3600000);  d -= hrs*3600000;
+    const mins = Math.floor(d / 60000);    d -= mins*60000;
+    const secs = Math.floor(d / 1000);
+    const p = n => String(n).padStart(2,'0');
+    document.getElementById('cd-d').textContent = p(days);
+    document.getElementById('cd-h').textContent = p(hrs);
+    document.getElementById('cd-m').textContent = p(mins);
+    document.getElementById('cd-s').textContent = p(secs);
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ──────────────────────────────────────────────
+     HUB TAB SWITCH
+  ────────────────────────────────────────────── */
+  function switchHubTab(key, el) {
+    document.querySelectorAll('.hub-tabs-bar .xds-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('.hub-tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('hub-' + key).classList.add('active');
+  }
+  function switchSubTab(el) {
+    el.closest('.reward-subtabs').querySelectorAll('.reward-subtab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  /* ──────────────────────────────────────────────
+     FAQ
+  ────────────────────────────────────────────── */
+  function toggleFAQ(btn) {
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    btn.closest('.faq-list').querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  }
+
+  /* ──────────────────────────────────────────────
+     INIT
+  ────────────────────────────────────────────── */
+  renderTabs();
+  renderLeaderboard();
+</script>
+</body>
+</html>
