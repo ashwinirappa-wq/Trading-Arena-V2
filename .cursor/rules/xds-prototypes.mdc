@@ -1,0 +1,36 @@
+---
+description: XDS prototypes kit — design tokens and HTML/CSS rules for Exchange platform prototypes (shared CSS lives in the xds-prototypes repo).
+globs: ["*.html", "*.css", "**/*.html", "**/*.css"]
+alwaysApply: true
+---
+
+# XDS / Exchange prototypes — mandatory rules
+
+**Canonical repo:** https://github.com/ashwinirappa-wq/xds-prototypes  
+Static HTML in sibling projects should load tokens from that repo’s `public/design-system/` (see Rule 1).
+
+## Figma sources (reference first)
+- **XDS Exchange Design System:** https://www.figma.com/design/S5vzHnfEkTU1uETKnVOl7x/XDS---Exchange-Design-System
+- **Exchange Brand Playbook:** https://www.figma.com/slides/Oyb9M17fbUWZl4C7ZTO3jQ/Exchange-Brand-Playbook
+
+## Rule 1 — Import the shared CSS kit
+For HTML under `unified-campaign/`, use paths relative to the `Cursor` root:
+
+```html
+<link rel="stylesheet" href="../_shared/xds-prototypes/public/design-system/tokens.css">
+<link rel="stylesheet" href="../_shared/xds-prototypes/public/design-system/components.css">
+```
+
+If the HTML file lives elsewhere, adjust the relative path so it resolves to `xds-prototypes/public/design-system/*.css`.
+
+## Rule 2 — Use design tokens for all visual properties
+Never hardcode colours, spacing, font sizes, border radii, or shadows. Always use `var(--xds-*)` tokens.
+
+## Rule 3 — Dark theme by default
+Page root should use `var(--xds-surface-page)` and `var(--xds-text-primary)`.
+
+## Rule 4 — Use `.xds-*` component classes
+Use design-system component classes for buttons, cards, inputs, badges, tables, tabs, nav, info blocks, modals before writing custom CSS.
+
+## Rule 5–10
+Same typography, spacing, colour semantics, badges, navigation, and “check Figma before inventing styles” as before — tokens and classes are defined in `tokens.css` / `components.css` inside **xds-prototypes**.
